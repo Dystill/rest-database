@@ -1,20 +1,20 @@
-Bottled Water
-Long Island Tea
-Bud Light
-Paradise Punch
-Mango Passion Smoothie
-Passion Fruit Tea
-Tropical Rasberry Tea
-Coca Cola
-Sprite
-Dr Pepper
-Bourban Barrel Chicken
-Sizzling Chicken & Spinach
-Grilled Salmon with Lobster
-Cajun Shrimp & Chicken Pasta
-Parmesan-crusted Chicken
-Crispy Chicken Fingers
-All-American Stacked Burger
-Turkey Burger
-Strawberry Fields Salad
-Caesar Salad
+BOTTLED WATER
+LONG ISLAND TEA
+BUD LIGHT
+PARADISE PUNCH
+MANGO PASSION SMOOTHIE
+PASSION FRUIT TEA
+TROPICAL RASBERRY TEA
+COCA COLA
+SPRITE
+DR PEPPER
+BOURBAN BARREL CHICKEN
+SIZZLING CHICKEN & SPINACH
+GRILLED SALMON WITH LOBSTER
+CAJUN SHRIMP & CHICKEN PASTA
+PARMESAN-CRUSTED CHICKEN
+CRISPY CHICKEN FINGERS
+ALL-AMERICAN STACKED BURGER
+TURKEY BURGER
+STRAWBERRY FIELDS SALAD
+CAESAR SALAD
