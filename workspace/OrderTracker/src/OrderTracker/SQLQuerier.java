@@ -33,8 +33,30 @@ public class SQLQuerier {
 		System.out.println("Created Table.");
 	}
 	
-	public void searchFor(String value, String column, String table) {
+	public boolean searchFor(String value, String column, String table) {
 		
+		boolean exists = false;
+		
+		try {
+	        stmt = con.createStatement();
+			ResultSet rs;
+			String query = "select * from " + table;
+			
+			rs = stmt.executeQuery(query);
+			
+			while( rs.next() ) {
+				if( rs.getString(column).equals(value)) {
+					exists = true;
+				}
+			}
+			rs.close();
+		}
+		catch (SQLException e) {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			exists = false;
+		}
+		
+		return exists;
 	}
 
 }

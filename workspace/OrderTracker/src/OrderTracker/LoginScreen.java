@@ -22,13 +22,15 @@ public class LoginScreen extends JFrame {
 	private final JPasswordField passField = new JPasswordField();
 	
 	private final JLabel userLabel = new JLabel("Username"),
-	                     passLabel = new JLabel("Password");
+	                     passLabel = new JLabel("Password"),
+	                     incorrectLogin = new JLabel("Correct Username and Password! You're an Employee!");
 
     private final JButton submit = new JButton("Login");
     private final JButton clear = new JButton("Clear");
     private final JButton cancel = new JButton("Exit");
     
     private int borderSize = 20;
+    private boolean employee = true;
 
 	/**
 	 * Launch the application.
@@ -117,6 +119,7 @@ public class LoginScreen extends JFrame {
 	
 		// add the entry panel to the center of the main border layout panel
 		panel.add(entrypanel, BorderLayout.CENTER);
+		panel.add(incorrectLogin, BorderLayout.SOUTH);
 		contentPane.add(panel);
 		
 		
@@ -128,7 +131,7 @@ public class LoginScreen extends JFrame {
 		// switch to the password field when the user presses enter
 		userField.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				passField.requestFocus();
 			}
 		});
@@ -136,8 +139,8 @@ public class LoginScreen extends JFrame {
 		// submit when pressing enter on the password field
 		passField.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
+			public void actionPerformed(ActionEvent e) {
+				showIncorrectLoginText();
 			}
 		});
 		
@@ -145,7 +148,7 @@ public class LoginScreen extends JFrame {
 		submit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				showIncorrectLoginText();
 			}
 		});
 		
@@ -174,6 +177,46 @@ public class LoginScreen extends JFrame {
         pack();
         setLocationRelativeTo(null);
         
+        // removes the incorrect login text
+		incorrectLogin.setVisible(false);
+        
 	}
 
+	public boolean lookupLogin(String table, String username, String password) {
+		SQLQuerier query = new SQLQuerier("Restaurant");
+		String prefix = (table.equals("Customers")) ? "c" : "e";
+		
+		boolean valid = false;
+		
+		if(query.searchFor(username, prefix + "username", table) &&
+				query.searchFor(password, prefix + "password", table))
+			valid = true;
+		
+		return valid;
+	}
+	
+	public void showIncorrectLoginText() {
+		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
+			// go to menu item list page
+			incorrectLogin.setVisible(false);
+			incorrectLogin.setForeground(Color.GREEN);
+			incorrectLogin.setText("Correct Username and Password!");
+			incorrectLogin.setVisible(true);
+		}
+		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
+			// go to menu item list page
+			employee = true;
+			incorrectLogin.setVisible(false);
+			incorrectLogin.setForeground(Color.GREEN);
+			incorrectLogin.setText("Correct Username and Password! You're an Employee!");
+			incorrectLogin.setVisible(true);
+		}
+		else {
+			incorrectLogin.setVisible(false);
+			incorrectLogin.setForeground(Color.RED);
+			incorrectLogin.setText("Incorrect Username or Password.");
+			incorrectLogin.setVisible(true);
+		}
+	}
+	
 }
