@@ -12,7 +12,8 @@ public class LoginScreen extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel contentPane,
-	               panel,
+	               loginpanel,
+	               menuPanel,
 	               entrypanel,
 	               userPanel,
 	               passPanel,
@@ -23,6 +24,7 @@ public class LoginScreen extends JFrame {
 	
 	private final JLabel userLabel = new JLabel("Username"),
 	                     passLabel = new JLabel("Password"),
+	                     menuLabel = new JLabel("Test"),
 	                     incorrectLogin = new JLabel("Correct Username and Password! You're an Employee!");
 
     private final JButton submit = new JButton("Login");
@@ -66,63 +68,11 @@ public class LoginScreen extends JFrame {
         setTitle("Login");
 		contentPane.setLayout(new CardLayout());	// set the main window to a card layout
 		
-		// create a new panel with a border layout
-		panel = new JPanel();
-		panel.setLayout(new BorderLayout());
+		createLoginPanel();
+		createMenuPanel();
 
-		// create an panel with entry fields
-		entrypanel = new JPanel();
-		entrypanel.setLayout(new BoxLayout(entrypanel, BoxLayout.PAGE_AXIS));
-
-		
-		
-		// create a panel for the username
-		userPanel = new JPanel(new FlowLayout());
-		
-		// align and size the user textfield
-		userField.setHorizontalAlignment(SwingConstants.LEFT);
-		userField.setColumns(15);
-		
-		// add label and textfield to the username panel
-		userPanel.add(userLabel);
-		userPanel.add(userField);
-
-		
-		
-		// create a panel for the password
-		passPanel = new JPanel(new FlowLayout());
-		
-		// align and size the password field
-		passField.setHorizontalAlignment(SwingConstants.LEFT);
-		passField.setColumns(15);
-			
-		// add label and passwordfield to the password panel
-		passPanel.add(passLabel);
-		passPanel.add(passField);
-
-		
-		
-		// create and add a button panel with login and cancel
-		buttonPanel = new JPanel(new FlowLayout());	
-		buttonPanel.add(cancel);	
-		buttonPanel.add(clear);
-		buttonPanel.add(submit);
-		
-		
-		
-		// add the username, password, and button panels to the entrypanel
-		entrypanel.add(userPanel);
-		entrypanel.add(passPanel);
-		entrypanel.add(buttonPanel);
-		
-		
-	
-		// add the entry panel to the center of the main border layout panel
-		panel.add(entrypanel, BorderLayout.CENTER);
-		panel.add(incorrectLogin, BorderLayout.SOUTH);
-		contentPane.add(panel);
-		
-		
+		contentPane.add(loginpanel);
+		contentPane.add(menuPanel);
 		
 		/***************************************************
 		 ** Action Listeners for the different components **
@@ -140,7 +90,7 @@ public class LoginScreen extends JFrame {
 		passField.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showIncorrectLoginText();
+				processLogin();
 			}
 		});
 		
@@ -148,7 +98,7 @@ public class LoginScreen extends JFrame {
 		submit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showIncorrectLoginText();
+				processLogin();
 			}
 		});
 		
@@ -170,9 +120,6 @@ public class LoginScreen extends JFrame {
 			}
 		});
 		
-		
-		
-		
 		// condense and center the window before displaying
         pack();
         setLocationRelativeTo(null);
@@ -180,6 +127,59 @@ public class LoginScreen extends JFrame {
         // removes the incorrect login text
 		incorrectLogin.setVisible(false);
         
+	}
+	
+	private void createMenuPanel() {
+		// menu panel
+		menuPanel = new JPanel();
+		
+	}
+
+	public void createLoginPanel() {
+		// create a new panel with a border layout
+		loginpanel = new JPanel();
+		loginpanel.setLayout(new BorderLayout());
+		
+		// create an panel with entry fields
+		entrypanel = new JPanel();
+		entrypanel.setLayout(new BoxLayout(entrypanel, BoxLayout.PAGE_AXIS));
+
+		// create a panel for the username
+		userPanel = new JPanel(new FlowLayout());
+		
+		// align and size the user textfield
+		userField.setHorizontalAlignment(SwingConstants.LEFT);
+		userField.setColumns(15);
+		
+		// add label and textfield to the username panel
+		userPanel.add(userLabel);
+		userPanel.add(userField);
+
+		// create a panel for the password
+		passPanel = new JPanel(new FlowLayout());
+		
+		// align and size the password field
+		passField.setHorizontalAlignment(SwingConstants.LEFT);
+		passField.setColumns(15);
+			
+		// add label and passwordfield to the password panel
+		passPanel.add(passLabel);
+		passPanel.add(passField);
+		
+		// create and add a button panel with login and cancel
+		buttonPanel = new JPanel(new FlowLayout());	
+		buttonPanel.add(cancel);	
+		buttonPanel.add(clear);
+		buttonPanel.add(submit);
+		
+		// add the username, password, and button panels to the entrypanel
+		entrypanel.add(userPanel);
+		entrypanel.add(passPanel);
+		entrypanel.add(buttonPanel);
+		
+		// add the entry panel to the center of the main border layout panel
+		loginpanel.add(entrypanel, BorderLayout.CENTER);
+		loginpanel.add(incorrectLogin, BorderLayout.SOUTH);
 	}
 
 	public boolean lookupLogin(String table, String username, String password) {
@@ -195,7 +195,7 @@ public class LoginScreen extends JFrame {
 		return valid;
 	}
 	
-	public void showIncorrectLoginText() {
+	public void processLogin() {
 		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
 			incorrectLogin.setVisible(false);
