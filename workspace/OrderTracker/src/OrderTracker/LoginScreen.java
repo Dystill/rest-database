@@ -31,6 +31,8 @@ public class LoginScreen extends JFrame {
     private final JButton clear = new JButton("Clear");
     private final JButton cancel = new JButton("Exit");
     
+    private CardLayout cl = new CardLayout();
+    
     private int borderSize = 20;
     private boolean employee = true;
 
@@ -66,13 +68,15 @@ public class LoginScreen extends JFrame {
 		contentPane.setBorder(new EmptyBorder(borderSize, borderSize, borderSize, borderSize));
 		setContentPane(contentPane);
         setTitle("Login");
-		contentPane.setLayout(new CardLayout());	// set the main window to a card layout
+		contentPane.setLayout(cl);	// set the main window to a card layout
 		
 		createLoginPanel();
 		createMenuPanel();
 
-		contentPane.add(loginpanel);
-		contentPane.add(menuPanel);
+		contentPane.add(loginpanel, "1");
+		contentPane.add(menuPanel, "2");
+		
+		cl.show(contentPane, "1");
 		
 		/***************************************************
 		 ** Action Listeners for the different components **
@@ -132,7 +136,7 @@ public class LoginScreen extends JFrame {
 	private void createMenuPanel() {
 		// menu panel
 		menuPanel = new JPanel();
-		
+		menuPanel.add(menuLabel);
 	}
 
 	public void createLoginPanel() {
@@ -199,18 +203,12 @@ public class LoginScreen extends JFrame {
 	public void processLogin() {
 		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
-			incorrectLogin.setVisible(false);
-			incorrectLogin.setForeground(Color.GREEN);
-			incorrectLogin.setText("Correct Username and Password!");
-			incorrectLogin.setVisible(true);
+			cl.show(contentPane, "2");
 		}
 		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
 			employee = true;
-			incorrectLogin.setVisible(false);
-			incorrectLogin.setForeground(Color.GREEN);
-			incorrectLogin.setText("Correct Username and Password! You're an Employee!");
-			incorrectLogin.setVisible(true);
+			cl.show(contentPane, "2");
 		}
 		else {
 			incorrectLogin.setVisible(false);
