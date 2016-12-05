@@ -188,9 +188,10 @@ public class LoginScreen extends JFrame {
 		
 		boolean valid = false;
 		
-		if(query.searchFor(username, prefix + "username", table) &&
-				query.searchFor(password, prefix + "password", table))
+		if(query.searchForTwoCols(table, prefix + "username", username,
+				                         prefix + "password", password)) {
 			valid = true;
+		}
 		
 		return valid;
 	}
