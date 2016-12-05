@@ -22,11 +22,16 @@ public class LoginScreen extends JFrame {
 	private final JTextField userField = new JTextField();
 	private final JPasswordField passField = new JPasswordField();
 	
+	//Login Labels
 	private final JLabel userLabel = new JLabel("Username"),
 	                     passLabel = new JLabel("Password"),
 	                     menuLabel = new JLabel("Test"),
 	                     incorrectLogin = new JLabel("Correct Username and Password! You're an Employee!");
+	
+	//Menu Labels       
+	private final JLabel customerLabel = new JLabel("Hello");
 
+	//Login Buttons
     private final JButton submit = new JButton("Login");
     private final JButton clear = new JButton("Clear");
     private final JButton cancel = new JButton("Exit");
@@ -71,9 +76,9 @@ public class LoginScreen extends JFrame {
 		createLoginPanel();
 		createMenuPanel();
 
-		contentPane.add(loginpanel);
-		contentPane.add(menuPanel);
-		
+		contentPane.add(loginpanel, "Card1"); 
+		contentPane.add(menuPanel, "Card2");
+			
 		/***************************************************
 		 ** Action Listeners for the different components **
 		 ***************************************************/
@@ -130,13 +135,27 @@ public class LoginScreen extends JFrame {
 	}
 	
 	private void createMenuPanel() {
+        
 		// menu panel
 		menuPanel = new JPanel();
+		menuPanel.setLayout(new BorderLayout());
+		
+		//menuPanel.add(customerLabel);
+		 
+		CardLayout cardLayout = (CardLayout) contentPane.getLayout();
+        cardLayout.show(contentPane, "Card2");
+        
+        
+	
+		// new window for menu
+       menuPanel.add(customerLabel);
+       
 		
 	}
 
 	public void createLoginPanel() {
 		// create a new panel with a border layout
+		
 		loginpanel = new JPanel();
 		loginpanel.setLayout(new BorderLayout());
 		
@@ -203,6 +222,10 @@ public class LoginScreen extends JFrame {
 			incorrectLogin.setForeground(Color.GREEN);
 			incorrectLogin.setText("Correct Username and Password!");
 			incorrectLogin.setVisible(true);
+			
+			//opens new Menu Panel
+			createMenuPanel();
+			
 		}
 		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
@@ -211,6 +234,9 @@ public class LoginScreen extends JFrame {
 			incorrectLogin.setForeground(Color.GREEN);
 			incorrectLogin.setText("Correct Username and Password! You're an Employee!");
 			incorrectLogin.setVisible(true);
+			
+			//opens new Menu Panel
+			createMenuPanel();
 		}
 		else {
 			incorrectLogin.setVisible(false);
