@@ -12,15 +12,15 @@ public class LoginScreen extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private JPanel contentPane,
-	               loginpanel,
-	               menuPanel,
-	               greetingPanel,
-	               itemsPanel,
-	               entrypanel,
-	               userPanel,
-	               passPanel,
-	               buttonPanel;
+	private JPanel contentPane,		// the main panel to contain every interface
+	               loginpanel,		// for the login window
+	               menuPanel,		// for the menu window
+	               greetingPanel,	// for the greeting bar in the menu window
+	               itemsPanel,		// to hold the tabbed menu in the menu window
+	               entrypanel,		// to hold the text fields in the login window
+	               userPanel,		// to hold the username entry field in login
+	               passPanel,		// to hold the password entry field in login
+	               buttonPanel;		// to hold the buttons in the login
 	
 	private final JTextField userField = new JTextField();
 	private final JPasswordField passField = new JPasswordField();
@@ -28,7 +28,6 @@ public class LoginScreen extends JFrame {
 	private final JLabel userLabel = new JLabel("Username"),
 	                     passLabel = new JLabel("Password"),
 	                     greetingLabel = new JLabel("Hello", SwingConstants.CENTER),
-	                     testLabel = new JLabel("TEST"),
 	                     incorrectLogin = new JLabel("");
 
     private final JButton submit = new JButton("Login");
@@ -39,7 +38,7 @@ public class LoginScreen extends JFrame {
     private CardLayout cl = new CardLayout();
     
     private int borderSize = 20;
-    private boolean employee = true;
+    private boolean isEmployee = true;
 
 	/**
 	 * Launch the application.
@@ -153,16 +152,21 @@ public class LoginScreen extends JFrame {
 	}
 	
 	private void createMenuPanel() {
+		
+		String greeting = "Hello " + (isEmployee ? "Employee!" : "Customer!");
+		
 		// menu panel - greeting
 		menuPanel = new JPanel();
-
 		menuPanel.setLayout(new BorderLayout());
 		
 		// greeting panel
 		greetingPanel = new JPanel();
 		greetingPanel.setLayout(new BorderLayout());
+		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
 		
-		greetingPanel.add(greetingLabel, BorderLayout.NORTH);
+		greetingLabel.setText(greeting);
+		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
+		greetingPanel.add(logout, BorderLayout.EAST);
 		
 		// food and drink items tabs
 		JTabbedPane itemsPanel = new JTabbedPane();
@@ -180,7 +184,6 @@ public class LoginScreen extends JFrame {
 		// add two (greeting and food/drink panels) to main menu panel
 		menuPanel.add(greetingPanel, BorderLayout.NORTH);
 		menuPanel.add(itemsPanel, BorderLayout.CENTER);
-		menuPanel.add(logout, BorderLayout.SOUTH);
 
 		//menuPanel.add(menuLabel);
 		//menuPanel.add(logout);
@@ -269,13 +272,13 @@ public class LoginScreen extends JFrame {
 		// check the customers table for the login info
 		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
-			employee = false;
+			isEmployee = false;
 			cl.show(contentPane, "2");
 		}
 		// check the employees table for the login info
 		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
-			employee = true;
+			isEmployee = true;
 			cl.show(contentPane, "2");
 		}
 		// show text saying the login info was incorrect
