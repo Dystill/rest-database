@@ -34,6 +34,7 @@ public class LoginScreen extends JFrame {
     private final JButton submit = new JButton("Login");
     private final JButton clear = new JButton("Clear");
     private final JButton cancel = new JButton("Exit");
+    private final JButton logout = new JButton("Logout");
     
     private CardLayout cl = new CardLayout();
     
@@ -127,6 +128,15 @@ public class LoginScreen extends JFrame {
 				ls.dispose();
 			}
 		});
+
+		// closes application when pressing the cancel button
+		logout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cl.show(contentPane, "1");
+				clear.doClick();
+			}
+		});
 		
 		// condense and center the window before displaying
         pack();
@@ -140,6 +150,7 @@ public class LoginScreen extends JFrame {
 	private void createMenuPanel() {
 		// menu panel - greeting
 		menuPanel = new JPanel();
+<<<<<<< HEAD
 		menuPanel.setLayout(new BorderLayout());
 		
 		// greeting panel
@@ -164,6 +175,10 @@ public class LoginScreen extends JFrame {
 		// add two (greeting and food/drink panels) to main menu panel
 		menuPanel.add(greetingPanel, BorderLayout.NORTH);
 		menuPanel.add(itemsPanel, BorderLayout.CENTER);
+=======
+		menuPanel.add(menuLabel);
+		menuPanel.add(logout);
+>>>>>>> origin/master
 	}
 	
 	protected JComponent makeTextPanel(String text) {
@@ -228,8 +243,17 @@ public class LoginScreen extends JFrame {
 		
 		boolean valid = false;
 		
+		String loginInfo[] = {username, password};
+		String columns[] = {prefix + "username", prefix + "password"};
+		
+		/*
 		if(query.searchForTwoCols(table, prefix + "username", username,
 				                         prefix + "password", password)) {
+			valid = true;
+		}
+		/**/
+		
+		if(query.searchFor(table, columns, loginInfo)) {
 			valid = true;
 		}
 		

@@ -59,25 +59,25 @@ public class SQLQuerier {
 		return exists;
 	}
 	
-	public boolean searchForTwoCols(String table, String col1, String val1, String col2, String val2) {
+	public boolean searchFor(String table, String cols[], String vals[]) {
 		boolean exists = false;
 		
 		try {
 	        stmt = con.createStatement();
 			ResultSet rs;
-			String query = "select " + col1 + "," + col2 +
-					" from " + table;
 			
+			// create the query
+			String query = "select " + cols[0];
+			for(int i = 1; i < cols.length; i++){
+				query = query + "," + cols[i];
+			}
+			query = query + " from " + table;
+			
+			// execute the query in the table
 			rs = stmt.executeQuery(query);
 			
-			while(rs.next()) {
-				for(int i = 0; i < 2; i++) {
-					if(rs.getString(col1).equals(val1)) {
-						if(rs.getString(col2).equals(val2)) {
-							exists = true;
-						}
-					}
-				}
+			while(rs.next() && !exists) {
+				exists = searchForRecurse(rs, cols, vals, 0);
 			}
 			
 			rs = stmt.executeQuery(query);
@@ -92,6 +92,35 @@ public class SQLQuerier {
 		return exists;
 	}
 	
-	
-
+	// check each column of a row for an sql table and sees if it matches a set of values.
+	public boolean searchForRecurse(ResultSet rs, String cols[], String vals[], int size) {
+		boolean correct = false;
+		
+		// check if this level's value exists in this level's column
+		try {
+			if(size < cols.length) {
+				if(rs.getString(cols[size]).equals(vals[size])) {
+					if(size == (cols.length - 1)) {
+						// if it does exist and it's the last column, return true.
+						correct = true;
+					}
+					else {
+						// if it does exists, go to the next recursion level
+						correct = searchForRecurse(rs, cols, vals, size + 1);
+					}
+				}
+				else {
+					// if it does not exists, return false
+					correct = false;
+				}
+			}
+		}
+		catch (SQLException e) {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			correct = false;
+		}
+		
+		return correct;
+	}
+	/**/
 }
