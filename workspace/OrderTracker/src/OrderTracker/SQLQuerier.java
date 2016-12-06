@@ -1,6 +1,8 @@
 package OrderTracker;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLQuerier {
 	Connection con = null;
@@ -33,20 +35,27 @@ public class SQLQuerier {
 		System.out.println("Created Table.");
 	}
 	
+	// searches for a single value in a single column of the specified table
+	// returns true if the valeu exists
 	public boolean searchFor(String table, String column, String value) {
 		
+		// flag for if the value was found
 		boolean exists = false;
 		
 		try {
+			// create statement
 	        stmt = con.createStatement();
 			ResultSet rs;
+			
+			// make a query for the entire table
 			String query = "select * from " + table;
 			
 			rs = stmt.executeQuery(query);
 			
-			while( rs.next() ) {
+			// searches for the value in the column until it is found
+			while( rs.next() && !exists) {
 				if( rs.getString(column).equals(value)) {
-					exists = true;
+					exists = true;	// set flag to true if the value was found.
 				}
 			}
 			rs.close();
@@ -59,6 +68,9 @@ public class SQLQuerier {
 		return exists;
 	}
 	
+	// searches the specified sql table for a row that matches the array of values
+	// in correspondence to the array of columns
+	// returns true if the row exists.
 	public boolean searchFor(String table, String cols[], String vals[]) {
 		boolean exists = false;
 		
@@ -66,7 +78,7 @@ public class SQLQuerier {
 	        stmt = con.createStatement();
 			ResultSet rs;
 			
-			// create the query
+			// create a query for all of the columns specified from the table specified
 			String query = "select " + cols[0];
 			for(int i = 1; i < cols.length; i++){
 				query = query + "," + cols[i];
@@ -75,12 +87,12 @@ public class SQLQuerier {
 			
 			// execute the query in the table
 			rs = stmt.executeQuery(query);
-			
+
+			// searches for the row until there's a match
 			while(rs.next() && !exists) {
+				// call recursive search function
 				exists = searchForRecurse(rs, cols, vals, 0);
 			}
-			
-			rs = stmt.executeQuery(query);
 			
 			rs.close();
 		}
@@ -93,12 +105,14 @@ public class SQLQuerier {
 	}
 	
 	// check each column of a row for an sql table and sees if it matches a set of values.
-	public boolean searchForRecurse(ResultSet rs, String cols[], String vals[], int size) {
+	private boolean searchForRecurse(ResultSet rs, String cols[], String vals[], int size) {
 		boolean correct = false;
 		
 		// check if this level's value exists in this level's column
 		try {
+			// keep recursing for each column
 			if(size < cols.length) {
+				// sees if the value matches
 				if(rs.getString(cols[size]).equals(vals[size])) {
 					if(size == (cols.length - 1)) {
 						// if it does exist and it's the last column, return true.
@@ -122,5 +136,38 @@ public class SQLQuerier {
 		
 		return correct;
 	}
-	/**/
+	
+	// return a string array containing a list of the specified column
+	public String[] getListOf(String table, String column) {
+		
+		// initialize an arraylist to hold the string values
+		List<String> list = new ArrayList<String>();
+		
+		try {
+			// create statement
+	        stmt = con.createStatement();
+			ResultSet rs;
+			
+			// create a query to get the desired column from the table
+			String query = "select " + column + " from " + table;
+			
+			// execute the query
+			rs = stmt.executeQuery(query);
+			
+			// go through the column to add each string to the arraylist
+			while(rs.next()) {
+				list.add(rs.getString(column));
+			}
+			
+			// close the result set
+			rs.close();
+		}
+		catch (SQLException e) {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		}
+		
+		// convert the arraylist to a string array
+		return list.toArray(new String[list.size()]);
+	}
+	
 }

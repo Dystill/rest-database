@@ -29,7 +29,7 @@ public class LoginScreen extends JFrame {
 	                     passLabel = new JLabel("Password"),
 	                     greetingLabel = new JLabel("Hello", SwingConstants.CENTER),
 	                     testLabel = new JLabel("TEST"),
-	                     incorrectLogin = new JLabel("Correct Username and Password! You're an Employee!");
+	                     incorrectLogin = new JLabel("");
 
     private final JButton submit = new JButton("Login");
     private final JButton clear = new JButton("Clear");
@@ -75,12 +75,15 @@ public class LoginScreen extends JFrame {
         setTitle("Login");
 		contentPane.setLayout(cl);	// set the main window to a card layout
 		
-		createLoginPanel();
-		createMenuPanel();
+		// create each main interface of the program
+		createLoginPanel();	// login screen
+		createMenuPanel();	// menu screen
 
+		// add each interface to the primary content pane
 		contentPane.add(loginpanel, "1");
 		contentPane.add(menuPanel, "2");
 		
+		// show the login screen first
 		cl.show(contentPane, "1");
 		
 		/***************************************************
@@ -108,6 +111,7 @@ public class LoginScreen extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				processLogin();
+		        pack();
 			}
 		});
 		
@@ -135,6 +139,7 @@ public class LoginScreen extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				cl.show(contentPane, "1");
 				clear.doClick();
+		        pack();
 			}
 		});
 		
@@ -239,38 +244,41 @@ public class LoginScreen extends JFrame {
 	}
 
 	public boolean lookupLogin(String table, String username, String password) {
+		// create a SQLQuerier object to handle queries
 		SQLQuerier query = new SQLQuerier("Restaurant");
+		// create the column prefix needed for customers or employees
 		String prefix = (table.equals("Customers")) ? "c" : "e";
 		
+		// flag to say whether the login infor was found
 		boolean valid = false;
 		
+		// string arrays to hold the username and password combo
 		String loginInfo[] = {username, password};
 		String columns[] = {prefix + "username", prefix + "password"};
 		
-		/*
-		if(query.searchForTwoCols(table, prefix + "username", username,
-				                         prefix + "password", password)) {
-			valid = true;
-		}
-		/**/
-		
+		// search for the login info in the database
 		if(query.searchFor(table, columns, loginInfo)) {
 			valid = true;
 		}
 		
+		// return whether the login info was found or not
 		return valid;
 	}
 	
 	public void processLogin() {
+		// check the customers table for the login info
 		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
+			employee = false;
 			cl.show(contentPane, "2");
 		}
+		// check the employees table for the login info
 		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
 			employee = true;
 			cl.show(contentPane, "2");
 		}
+		// show text saying the login info was incorrect
 		else {
 			incorrectLogin.setVisible(false);
 			incorrectLogin.setForeground(Color.RED);
