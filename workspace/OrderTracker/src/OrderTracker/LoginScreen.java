@@ -16,7 +16,9 @@ public class LoginScreen extends JFrame {
 	               loginpanel,		// for the login window
 	               menuPanel,		// for the menu window
 	               greetingPanel,	// for the greeting bar in the menu window
-	               itemsPanel,		// to hold the tabbed menu in the menu window
+	               allMenuTab,	//	both food and drink items tab
+	               foodTab,		// for the food items tab
+	               drinkTab,		// for the drink items tab
 	               entrypanel,		// to hold the text fields in the login window
 	               userPanel,		// to hold the username entry field in login
 	               passPanel,		// to hold the password entry field in login
@@ -65,7 +67,7 @@ public class LoginScreen extends JFrame {
 	
 	public void createLoginWindow(LoginScreen ls) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(200, 200, 550, 400);
 		
 		// create the main window
 		contentPane = new JPanel();
@@ -168,36 +170,26 @@ public class LoginScreen extends JFrame {
 		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
 		greetingPanel.add(logout, BorderLayout.EAST);
 		
-		// food and drink items tabs
+		// food and drink items multiple tabs
 		JTabbedPane itemsPanel = new JTabbedPane();
 	    
-		// food
-		JComponent foodPanel = makeTextPanel("Food");
-	    itemsPanel.addTab("Food Items", foodPanel);
-	    itemsPanel.setMnemonicAt(0, KeyEvent.VK_1);
-	    
-	    //drink
-	    JComponent drinkPanel = makeTextPanel("Drink");
-	    itemsPanel.addTab("Drink Items", drinkPanel);
-	    itemsPanel.setMnemonicAt(1, KeyEvent.VK_2);
-	        
-		// add two (greeting and food/drink panels) to main menu panel
+		// all menu items tab
+		allMenuTab = new JPanel();
+		itemsPanel.addTab("All Items", allMenuTab);
+		
+		// food items tab
+		 foodTab = new JPanel();
+	    itemsPanel.addTab("Food Items", foodTab);
+	  
+	    // drink items tab
+	    drinkTab = new JPanel();
+	    itemsPanel.addTab("Drink Items", drinkTab);
+	
+		// add (greeting and food/drink panels) to main menu panel
 		menuPanel.add(greetingPanel, BorderLayout.NORTH);
 		menuPanel.add(itemsPanel, BorderLayout.CENTER);
 
-		//menuPanel.add(menuLabel);
-		//menuPanel.add(logout);
-
 	}
-	
-	protected JComponent makeTextPanel(String text) {
-        JPanel panel = new JPanel(false);
-        JLabel filler = new JLabel(text);
-        filler.setHorizontalAlignment(JLabel.CENTER);
-        panel.setLayout(new GridLayout(1, 1));
-        panel.add(filler);
-        return panel;
-    }
 
 	public void createLoginPanel() {
 		// create a new panel with a border layout
