@@ -3,6 +3,7 @@ package OrderTracker;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -14,6 +15,8 @@ public class LoginScreen extends JFrame {
 	private JPanel contentPane,
 	               loginpanel,
 	               menuPanel,
+	               greetingPanel,
+	               itemsPanel,
 	               entrypanel,
 	               userPanel,
 	               passPanel,
@@ -24,7 +27,8 @@ public class LoginScreen extends JFrame {
 	
 	private final JLabel userLabel = new JLabel("Username"),
 	                     passLabel = new JLabel("Password"),
-	                     menuLabel = new JLabel("Test"),
+	                     greetingLabel = new JLabel("Hello", SwingConstants.CENTER),
+	                     testLabel = new JLabel("TEST"),
 	                     incorrectLogin = new JLabel("Correct Username and Password! You're an Employee!");
 
     private final JButton submit = new JButton("Login");
@@ -134,17 +138,49 @@ public class LoginScreen extends JFrame {
 	}
 	
 	private void createMenuPanel() {
-		// menu panel
+		// menu panel - greeting
 		menuPanel = new JPanel();
-		menuPanel.add(menuLabel);
+		menuPanel.setLayout(new BorderLayout());
+		
+		// greeting panel
+		greetingPanel = new JPanel();
+		greetingPanel.setLayout(new BorderLayout());
+		
+		greetingPanel.add(greetingLabel, BorderLayout.NORTH);
+		
+		// food and drink items tabs
+		JTabbedPane itemsPanel = new JTabbedPane();
+	    
+		// food
+		JComponent foodPanel = makeTextPanel("Food");
+	    itemsPanel.addTab("Food Items", foodPanel);
+	    itemsPanel.setMnemonicAt(0, KeyEvent.VK_1);
+	    
+	    //drink
+	    JComponent drinkPanel = makeTextPanel("Drink");
+	    itemsPanel.addTab("Drink Items", drinkPanel);
+	    itemsPanel.setMnemonicAt(1, KeyEvent.VK_2);
+	        
+		// add two (greeting and food/drink panels) to main menu panel
+		menuPanel.add(greetingPanel, BorderLayout.NORTH);
+		menuPanel.add(itemsPanel, BorderLayout.CENTER);
 	}
+	
+	protected JComponent makeTextPanel(String text) {
+        JPanel panel = new JPanel(false);
+        JLabel filler = new JLabel(text);
+        filler.setHorizontalAlignment(JLabel.CENTER);
+        panel.setLayout(new GridLayout(1, 1));
+        panel.add(filler);
+        return panel;
+    }
 
 	public void createLoginPanel() {
 		// create a new panel with a border layout
 		loginpanel = new JPanel();
 		loginpanel.setLayout(new BorderLayout());
 		
-		// create an panel with entry fields
+		// create a panel with entry fields
 		entrypanel = new JPanel();
 		entrypanel.setLayout(new BoxLayout(entrypanel, BoxLayout.PAGE_AXIS));
 
