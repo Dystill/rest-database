@@ -150,7 +150,7 @@ public class LoginScreen extends JFrame {
 	private void createMenuPanel() {
 		// menu panel - greeting
 		menuPanel = new JPanel();
-<<<<<<< HEAD
+
 		menuPanel.setLayout(new BorderLayout());
 		
 		// greeting panel
@@ -175,10 +175,11 @@ public class LoginScreen extends JFrame {
 		// add two (greeting and food/drink panels) to main menu panel
 		menuPanel.add(greetingPanel, BorderLayout.NORTH);
 		menuPanel.add(itemsPanel, BorderLayout.CENTER);
-=======
-		menuPanel.add(menuLabel);
-		menuPanel.add(logout);
->>>>>>> origin/master
+		menuPanel.add(logout, BorderLayout.SOUTH);
+
+		//menuPanel.add(menuLabel);
+		//menuPanel.add(logout);
+
 	}
 	
 	protected JComponent makeTextPanel(String text) {
