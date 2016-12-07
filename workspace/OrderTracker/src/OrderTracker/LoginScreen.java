@@ -256,9 +256,13 @@ public class LoginScreen extends JFrame {
 		loginpanel.add(incorrectLogin, BorderLayout.SOUTH);
 	}
 	
-	// print string array to a jlist
-	public void printMenu(String[] list)
+	// print string array to a JLIST
+	public void printMenu(String table, String column, String[] list)
 	{
+		//call getListOf function
+		SQLQuerier query = new SQLQuerier("Menu");
+		String[] menu = query.getListOf(table, column);
+		
 		DefaultListModel model = new DefaultListModel();
 		for (int i=0, n = list.length; i<n; i++)
 			model.addElement(list[i]);
