@@ -67,7 +67,7 @@ public class LoginScreen extends JFrame {
 	
 	public void createLoginWindow(LoginScreen ls) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(200, 200, 550, 400);
+		setBounds(100, 100, 450, 300);
 		
 		// create the main window
 		contentPane = new JPanel();
@@ -175,21 +175,39 @@ public class LoginScreen extends JFrame {
 	    
 		// all menu items tab
 		allMenuTab = new JPanel();
+		allMenuTab.setLayout(new BorderLayout());
 		itemsPanel.addTab("All Items", allMenuTab);
 		
+		// TEST printing to all menu tab
+		/**DefaultListModel model = new DefaultListModel();
+		JList list = new JList(model);
+		    
+		for (int i = 1; i <10; i++)
+		    model.addElement("Food " + i);
+		    
+		 allMenuTab.add(list);**/
+	
 		// food items tab
-		 foodTab = new JPanel();
+		foodTab = new JPanel();
+		foodTab.setLayout(new BorderLayout());
 	    itemsPanel.addTab("Food Items", foodTab);
+	    
+	    // print food items
+	  
 	  
 	    // drink items tab
 	    drinkTab = new JPanel();
+	    drinkTab.setLayout(new BorderLayout());
 	    itemsPanel.addTab("Drink Items", drinkTab);
 	
+	    // print drink items
+	    
+	    
 		// add (greeting and food/drink panels) to main menu panel
 		menuPanel.add(greetingPanel, BorderLayout.NORTH);
 		menuPanel.add(itemsPanel, BorderLayout.CENTER);
-
 	}
+	
 
 	public void createLoginPanel() {
 		// create a new panel with a border layout
@@ -237,6 +255,18 @@ public class LoginScreen extends JFrame {
 		loginpanel.add(entrypanel, BorderLayout.CENTER);
 		loginpanel.add(incorrectLogin, BorderLayout.SOUTH);
 	}
+	
+	// print string array to a jlist
+	public void printMenu(String[] list)
+	{
+		DefaultListModel model = new DefaultListModel();
+		for (int i=0, n = list.length; i<n; i++)
+			model.addElement(list[i]);
+
+		JList menuList = new JList(model);
+		
+		allMenuTab.add(menuList);
+	}
 
 	public boolean lookupLogin(String table, String username, String password) {
 		// create a SQLQuerier object to handle queries
@@ -244,7 +274,7 @@ public class LoginScreen extends JFrame {
 		// create the column prefix needed for customers or employees
 		String prefix = (table.equals("Customers")) ? "c" : "e";
 		
-		// flag to say whether the login infor was found
+		// flag to say whether the login info was found
 		boolean valid = false;
 		
 		// string arrays to hold the username and password combo
