@@ -13,16 +13,25 @@ public class LoginScreen extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel contentPane,		// the main panel to contain every interface
-	               loginpanel,		// for the login window
+	               loginPanel,		// for the login window
 	               menuPanel,		// for the menu window
 	               greetingPanel,	// for the greeting bar in the menu window
-	               allMenuTab,	//	both food and drink items tab
-	               foodTab,		// for the food items tab
+	               allMenuTab,		//	both food and drink items tab
+	               foodTab,			// for the food items tab
 	               drinkTab,		// for the drink items tab
-	               entrypanel,		// to hold the text fields in the login window
+	               entryPanel,		// to hold the text fields in the login window
+	               textPanel,		// to hold the user and pass fields
 	               userPanel,		// to hold the username entry field in login
 	               passPanel,		// to hold the password entry field in login
 	               buttonPanel;		// to hold the buttons in the login
+	
+	private JList menuList,
+			      foodList,
+			      drinkList;
+	
+	private final JScrollPane menuScroll = new JScrollPane(), 
+						      foodScroll = new JScrollPane(),
+						      drinkScroll = new JScrollPane();
 	
 	private final JTextField userField = new JTextField();
 	private final JPasswordField passField = new JPasswordField();
@@ -38,6 +47,8 @@ public class LoginScreen extends JFrame {
     private final JButton logout = new JButton("Logout");
     
     private CardLayout cl = new CardLayout();
+    
+	private SQLQuerier query = new SQLQuerier("Restaurant");
     
     private int borderSize = 20;
     private boolean isEmployee = true;
@@ -81,12 +92,183 @@ public class LoginScreen extends JFrame {
 		createMenuPanel();	// menu screen
 
 		// add each interface to the primary content pane
-		contentPane.add(loginpanel, "1");
+		contentPane.add(loginPanel, "1");
 		contentPane.add(menuPanel, "2");
 		
 		// show the login screen first
 		cl.show(contentPane, "1");
 		
+		// add action listeners for all of the buttons and fields
+		createActionListeners(ls);
+		
+		// condense and center the window before displaying
+        pack();
+        setLocationRelativeTo(null);
+        
+        // removes the incorrect login text
+		incorrectLogin.setVisible(false);
+        
+	}
+	
+	private void createMenuPanel() {
+		
+		// menu panel - greeting
+		menuPanel = new JPanel();
+		menuPanel.setLayout(new BorderLayout());
+		
+		// greeting panel
+		greetingPanel = new JPanel();
+		greetingPanel.setLayout(new BorderLayout());
+		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
+		
+		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
+		greetingPanel.add(logout, BorderLayout.EAST);
+		
+		// food and drink items multiple tabs
+		JTabbedPane itemsPanel = new JTabbedPane();
+	    
+		// all menu items tab
+		allMenuTab = new JPanel();
+		allMenuTab.setLayout(new BorderLayout());
+		itemsPanel.addTab("All Items", allMenuTab);
+		
+		// add all items to the all menu tab
+		menuList = populateJList(query.getListOf("MenuItems", "itemname"));
+		menuScroll.setViewportView(menuList);
+		allMenuTab.add(menuScroll, BorderLayout.WEST);
+	
+		// food items tab
+		foodTab = new JPanel();
+		foodTab.setLayout(new BorderLayout());
+	    itemsPanel.addTab("Food Items", foodTab);
+	    
+	    // add all food items to the food tab
+	    foodList = populateJList(query.getListOf("FoodItems", "itemname"));
+		foodScroll.setViewportView(foodList);
+		foodTab.add(foodScroll, BorderLayout.WEST);
+	  	  
+	    // drink items tab
+	    drinkTab = new JPanel();
+	    drinkTab.setLayout(new BorderLayout());
+	    itemsPanel.addTab("Drink Items", drinkTab);
+	
+	    // add all drink items to the drink tab
+	    drinkList = populateJList(query.getListOf("DrinkItems", "itemname"));
+		drinkScroll.setViewportView(drinkList);
+		drinkTab.add(drinkScroll, BorderLayout.WEST);
+	    
+		// add (greeting and food/drink panels) to main menu panel
+		menuPanel.add(greetingPanel, BorderLayout.NORTH);
+		menuPanel.add(itemsPanel, BorderLayout.CENTER);
+	}
+	
+	// add items of a string array to a jlist
+	public JList<String> populateJList(String[] list) {
+		DefaultListModel<String> model = new DefaultListModel<String>();
+		for (int i=0, n = list.length; i<n; i++)
+			model.addElement(list[i]);
+
+		return new JList<String>(model);
+	}
+	
+	public void createLoginPanel() {
+		// create a new panel with a border layout
+		loginPanel = new JPanel();
+		loginPanel.setLayout(new BorderLayout());
+		
+		// create a panel with entry fields
+		entryPanel = new JPanel();
+		entryPanel.setLayout(new FlowLayout());
+		
+		textPanel = new JPanel();
+		textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+
+		// create a panel for the username
+		userPanel = new JPanel(new FlowLayout());
+		
+		// align and size the user textfield
+		userField.setHorizontalAlignment(SwingConstants.LEFT);
+		userField.setColumns(15);
+		
+		// add label and textfield to the username panel
+		userPanel.add(userLabel);
+		userPanel.add(userField);
+
+		// create a panel for the password
+		passPanel = new JPanel(new FlowLayout());
+		
+		// align and size the password field
+		passField.setHorizontalAlignment(SwingConstants.LEFT);
+		passField.setColumns(15);
+			
+		// add label and passwordfield to the password panel
+		passPanel.add(passLabel);
+		passPanel.add(passField);
+		
+		// create and add a button panel with login and cancel
+		buttonPanel = new JPanel(new FlowLayout());	
+		buttonPanel.add(cancel);	
+		buttonPanel.add(clear);
+		buttonPanel.add(submit);
+		
+		// add the username, password, and button panels to the entryPanel
+		textPanel.add(userPanel);
+		textPanel.add(passPanel);
+		entryPanel.add(textPanel);
+		entryPanel.add(buttonPanel);
+		
+		// add the entry panel to the center of the main border layout panel
+		loginPanel.add(entryPanel, BorderLayout.CENTER);
+		loginPanel.add(incorrectLogin, BorderLayout.SOUTH);
+	}
+
+	public boolean lookupLogin(String table, String username, String password) {
+		
+		// create the column prefix needed for customers or employees
+		String prefix = (table.equals("Customers")) ? "c" : "e";
+		
+		// flag to say whether the login info was found
+		boolean valid = false;
+		
+		// string arrays to hold the username and password combo
+		String loginInfo[] = {username, password};
+		String columns[] = {prefix + "username", prefix + "password"};
+		
+		// search for the login info in the database
+		if(query.searchFor(table, columns, loginInfo)) {
+			valid = true;
+		}
+		
+		// return whether the login info was found or not
+		return valid;
+	}
+	
+	public void processLogin() {
+		// check the customers table for the login info
+		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
+			// go to menu item list page
+			isEmployee = false;
+			cl.show(contentPane, "2");
+		}
+		// check the employees table for the login info
+		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
+			// go to menu item list page
+			isEmployee = true;
+			cl.show(contentPane, "2");
+		}
+		// show text saying the login info was incorrect
+		else {
+			incorrectLogin.setVisible(false);
+			incorrectLogin.setForeground(Color.RED);
+			incorrectLogin.setText("Incorrect Username or Password.");
+			incorrectLogin.setVisible(true);
+		}
+		
+		String greeting = "Hello " + (isEmployee ? "Employee!" : "Customer!");
+		greetingLabel.setText(greeting);
+	}
+	
+	public void createActionListeners(LoginScreen ls) {
 		/***************************************************
 		 ** Action Listeners for the different components **
 		 ***************************************************/
@@ -143,173 +325,6 @@ public class LoginScreen extends JFrame {
 		        pack();
 			}
 		});
-		
-		// condense and center the window before displaying
-        pack();
-        setLocationRelativeTo(null);
-        
-        // removes the incorrect login text
-		incorrectLogin.setVisible(false);
-        
-	}
-	
-	private void createMenuPanel() {
-		
-		String greeting = "Hello " + (isEmployee ? "Employee!" : "Customer!");
-		
-		// menu panel - greeting
-		menuPanel = new JPanel();
-		menuPanel.setLayout(new BorderLayout());
-		
-		// greeting panel
-		greetingPanel = new JPanel();
-		greetingPanel.setLayout(new BorderLayout());
-		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
-		
-		greetingLabel.setText(greeting);
-		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
-		greetingPanel.add(logout, BorderLayout.EAST);
-		
-		// food and drink items multiple tabs
-		JTabbedPane itemsPanel = new JTabbedPane();
-	    
-		// all menu items tab
-		allMenuTab = new JPanel();
-		allMenuTab.setLayout(new BorderLayout());
-		itemsPanel.addTab("All Items", allMenuTab);
-		
-		// TEST printing to all menu tab
-		/**DefaultListModel model = new DefaultListModel();
-		JList list = new JList(model);
-		    
-		for (int i = 1; i <10; i++)
-		    model.addElement("Food " + i);
-		    
-		 allMenuTab.add(list);**/
-	
-		// food items tab
-		foodTab = new JPanel();
-		foodTab.setLayout(new BorderLayout());
-	    itemsPanel.addTab("Food Items", foodTab);
-	    
-	    // print food items
-	  
-	  
-	    // drink items tab
-	    drinkTab = new JPanel();
-	    drinkTab.setLayout(new BorderLayout());
-	    itemsPanel.addTab("Drink Items", drinkTab);
-	
-	    // print drink items
-	    
-	    
-		// add (greeting and food/drink panels) to main menu panel
-		menuPanel.add(greetingPanel, BorderLayout.NORTH);
-		menuPanel.add(itemsPanel, BorderLayout.CENTER);
-	}
-	
-
-	public void createLoginPanel() {
-		// create a new panel with a border layout
-		loginpanel = new JPanel();
-		loginpanel.setLayout(new BorderLayout());
-		
-		// create a panel with entry fields
-		entrypanel = new JPanel();
-		entrypanel.setLayout(new BoxLayout(entrypanel, BoxLayout.PAGE_AXIS));
-
-		// create a panel for the username
-		userPanel = new JPanel(new FlowLayout());
-		
-		// align and size the user textfield
-		userField.setHorizontalAlignment(SwingConstants.LEFT);
-		userField.setColumns(15);
-		
-		// add label and textfield to the username panel
-		userPanel.add(userLabel);
-		userPanel.add(userField);
-
-		// create a panel for the password
-		passPanel = new JPanel(new FlowLayout());
-		
-		// align and size the password field
-		passField.setHorizontalAlignment(SwingConstants.LEFT);
-		passField.setColumns(15);
-			
-		// add label and passwordfield to the password panel
-		passPanel.add(passLabel);
-		passPanel.add(passField);
-		
-		// create and add a button panel with login and cancel
-		buttonPanel = new JPanel(new FlowLayout());	
-		buttonPanel.add(cancel);	
-		buttonPanel.add(clear);
-		buttonPanel.add(submit);
-		
-		// add the username, password, and button panels to the entrypanel
-		entrypanel.add(userPanel);
-		entrypanel.add(passPanel);
-		entrypanel.add(buttonPanel);
-		
-		// add the entry panel to the center of the main border layout panel
-		loginpanel.add(entrypanel, BorderLayout.CENTER);
-		loginpanel.add(incorrectLogin, BorderLayout.SOUTH);
-	}
-	
-	// print string array to a jlist
-	public void printMenu(String[] list)
-	{
-		DefaultListModel model = new DefaultListModel();
-		for (int i=0, n = list.length; i<n; i++)
-			model.addElement(list[i]);
-
-		JList menuList = new JList(model);
-		
-		allMenuTab.add(menuList);
-	}
-
-	public boolean lookupLogin(String table, String username, String password) {
-		// create a SQLQuerier object to handle queries
-		SQLQuerier query = new SQLQuerier("Restaurant");
-		// create the column prefix needed for customers or employees
-		String prefix = (table.equals("Customers")) ? "c" : "e";
-		
-		// flag to say whether the login info was found
-		boolean valid = false;
-		
-		// string arrays to hold the username and password combo
-		String loginInfo[] = {username, password};
-		String columns[] = {prefix + "username", prefix + "password"};
-		
-		// search for the login info in the database
-		if(query.searchFor(table, columns, loginInfo)) {
-			valid = true;
-		}
-		
-		// return whether the login info was found or not
-		return valid;
-	}
-	
-	public void processLogin() {
-		// check the customers table for the login info
-		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
-			// go to menu item list page
-			isEmployee = false;
-			cl.show(contentPane, "2");
-		}
-		// check the employees table for the login info
-		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
-			// go to menu item list page
-			isEmployee = true;
-			cl.show(contentPane, "2");
-		}
-		// show text saying the login info was incorrect
-		else {
-			incorrectLogin.setVisible(false);
-			incorrectLogin.setForeground(Color.RED);
-			incorrectLogin.setText("Incorrect Username or Password.");
-			incorrectLogin.setVisible(true);
-		}
 	}
 	
 }
