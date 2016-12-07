@@ -218,29 +218,8 @@ public class LoginScreen extends JFrame {
 		entryPanel.add(buttonPanel);
 		
 		// add the entry panel to the center of the main border layout panel
-<<<<<<< HEAD
 		loginPanel.add(entryPanel, BorderLayout.CENTER);
 		loginPanel.add(incorrectLogin, BorderLayout.SOUTH);
-=======
-		loginpanel.add(entrypanel, BorderLayout.CENTER);
-		loginpanel.add(incorrectLogin, BorderLayout.SOUTH);
-	}
-	
-	// print string array to a JLIST
-	public void printMenu(String table, String column, String[] list)
-	{
-		//call getListOf function
-		SQLQuerier query = new SQLQuerier("Menu");
-		String[] menu = query.getListOf(table, column);
-		
-		DefaultListModel model = new DefaultListModel();
-		for (int i=0, n = list.length; i<n; i++)
-			model.addElement(list[i]);
-
-		JList menuList = new JList(model);
-		
-		allMenuTab.add(menuList);
->>>>>>> origin/master
 	}
 
 	public boolean lookupLogin(String table, String username, String password) {
