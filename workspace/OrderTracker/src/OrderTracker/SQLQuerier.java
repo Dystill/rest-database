@@ -20,6 +20,7 @@ public class SQLQuerier {
 		}
 	}
 	
+	// method for creating a table
 	public void createTable(String query) throws SQLException {
 		
 	    try {
@@ -36,7 +37,7 @@ public class SQLQuerier {
 	}
 	
 	// searches for a single value in a single column of the specified table
-	// returns true if the valeu exists
+	// returns true if the value exists
 	public boolean searchFor(String table, String column, String value) {
 		
 		// flag for if the value was found
@@ -50,6 +51,7 @@ public class SQLQuerier {
 			// make a query for the entire table
 			String query = "select * from " + table;
 			
+			// execute the query
 			rs = stmt.executeQuery(query);
 			
 			// searches for the value in the column until it is found
@@ -90,7 +92,7 @@ public class SQLQuerier {
 
 			// searches for the row until there's a match
 			while(rs.next() && !exists) {
-				// call recursive search function
+				// call recursive search function to go through columns
 				exists = searchForRecurse(rs, cols, vals, 0);
 			}
 			
