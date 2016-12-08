@@ -25,7 +25,10 @@ public class LoginScreen extends JFrame {
 	               allMenuTab,		//	both food and drink items tab
 	               foodTab,			// for the food items tab
 	               drinkTab,		// for the drink items tab
-	               infoPanel;		// to hold the item info to the right
+	               infoPanel,		// to hold the item info to the right
+	               orderPanel,
+	               orderInfoPanel,
+	               cardEntryPanel;
 	
 	private JList menuList,
 			      foodList,
@@ -48,10 +51,11 @@ public class LoginScreen extends JFrame {
 	    	            		 "Welcome to the Restaurant Order Tracking System!",
 	    	            		 SwingConstants.CENTER);
 
-    private final JButton submit = new JButton("Login");
-    private final JButton clear = new JButton("Clear");
-    private final JButton cancel = new JButton("Exit");
-    private final JButton logout = new JButton("Logout");
+    private final JButton submit = new JButton("Login"),
+    		              clear = new JButton("Clear"),
+    		              cancel = new JButton("Exit"),
+    		              logout = new JButton("Logout"),
+    		              order = new JButton("Order Item");
     
    
     private CardLayout cl = new CardLayout();
@@ -65,6 +69,8 @@ public class LoginScreen extends JFrame {
     	             	{"All Items", "Order a Food", "Order a Drink"},
     	             windowNames =
     	             	{"Login", "Select an item to order", "Order"};
+    
+    private String currentUser, fname, lname, personid;
     		
 	/****************************
 	 ** Launch the application **
@@ -105,10 +111,12 @@ public class LoginScreen extends JFrame {
 		// create each main interface of the program
 		createLoginPanel();	// login screen
 		createMenuPanel();	// menu screen
+		createOrderPanel();
 
 		// add each interface to the primary content pane
 		contentPane.add(loginPanel, "1");
 		contentPane.add(menuPanel, "2");
+		contentPane.add(orderPanel, "3");
 		
 		// show the login screen first
 		switchToCard(1);
@@ -215,18 +223,35 @@ public class LoginScreen extends JFrame {
 	}
 	
 	public void processLogin() {
+		
+		String greeting;
+		
 		// check the customers table for the login info
 		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
-			// go to menu item list page
+			
 			isEmployee = false;
-			switchToCard(2);
+			
+			currentUser = userField.getText();	// store the username of this user
+			
+			getUserInfo("Customers", currentUser);
+			greetingLabel.setText(formatGreeting("Customer"));
+			
+			switchToCard(2);					// go to menu screen
+			
 	        pack();
 		}
 		// check the employees table for the login info
 		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
-			// go to menu item list page
+			
 			isEmployee = true;
-			switchToCard(2);
+			
+			currentUser = userField.getText();	// store the username of this user
+			
+			getUserInfo("Employees", currentUser);
+			greetingLabel.setText(formatGreeting("Employee"));
+			
+			switchToCard(2);					// go to menu screen
+			
 	        pack();
 		}
 		// show text saying the login info was incorrect
@@ -237,10 +262,39 @@ public class LoginScreen extends JFrame {
 			incorrectLogin.setVisible(true);
 	        pack();
 		}
+
+	}
+	
+	private String formatGreeting(String type) {
+		String greeting;
+
+		greeting = "Hello " + fname.substring(0, 1).toUpperCase()
+				+ fname.substring(1).toLowerCase() + "! " +
+				"(" + type + " #" + personid + ")";
 		
-		// set the greeting message in the menu panel to greet either the customer or employee
-		String greeting = "Hello " + (isEmployee ? "Employee!" : "Customer!");
-		greetingLabel.setText(greeting);
+		return greeting;
+	}
+	
+	// retrieve and save the current user's information
+	private void getUserInfo(String table, String user) {
+		
+		String[] pidfnln = query.getRowItems(
+				"People natural join " + table,
+				((table.equals("Customers")) ? "c" : "e") + "username",
+				user, new String[]{"personid", "fname", "lname"});
+
+		personid = pidfnln[0];
+		fname = pidfnln[1];
+		lname = pidfnln[2];
+		
+	}
+	
+	// reset any fields and labels that use the user's info.
+	private void resetUserLoginInfo() {
+		currentUser = fname = lname = personid = "";
+		greetingLabel.setText("");
+		userField.setText("");
+		passField.setText("");
 	}
 	
 	
@@ -326,9 +380,10 @@ public class LoginScreen extends JFrame {
 	}
 	
 	// method for updating the info panel with item information
-	public JPanel updateItemInfo(String itemname) {
+	public void updateItemInfo(String itemname) {
 		
-		return new JPanel();
+		
+		
 	}
 
 	
@@ -337,6 +392,10 @@ public class LoginScreen extends JFrame {
 	 *********************************************************/
 	
 	public void createOrderPanel() {
+		orderPanel = new JPanel();
+		orderPanel.setLayout(new BorderLayout());
+		
+		
 		
 	}
 	
@@ -385,9 +444,7 @@ public class LoginScreen extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				passField.setText("");	// set password field to an empty string
-				userField.setText("");	// set password field to an empty string
-				
+				resetUserLoginInfo();		// clear the user and password fields
 				userField.requestFocus();	// move cursor to the username field
 				
 			}
@@ -409,13 +466,21 @@ public class LoginScreen extends JFrame {
 				switchToCard(1);					// go to the login panel
 		        incorrectLogin.setVisible(false);	// remove the incorrect login text if present
 		        
-		        buttonPanel.setVisible(false);		// set button panel invisible before clicking clear
-				clear.doClick();					// to clear the contents of the text fields
-				buttonPanel.setVisible(true);		// before making it visible again
+		        resetUserLoginInfo();				// reset any variables that stored the user's information
+		        userField.requestFocus();			// move cursor to the username field
 				
 		        pack();
 			}
 		});
+		
+		order.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				switchToCard(3);
+			}
+		});
+		
 	}
 	
 }

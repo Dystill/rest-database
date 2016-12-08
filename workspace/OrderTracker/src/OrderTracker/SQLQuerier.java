@@ -172,4 +172,38 @@ public class SQLQuerier {
 		return list.toArray(new String[list.size()]);
 	}
 	
+	// get values from a row in a table specified by a unique key
+	public String[] getRowItems(String table, String column, String key, String[] cols) {
+		
+		// initialize an arraylist to hold the string values
+		List<String> list = new ArrayList<String>();
+		
+		try {
+			// create statement
+	        stmt = con.createStatement();
+			ResultSet rs;
+			
+			// create a query to get the desired column from the table
+			String query = "select * from " + table + " where " + 
+					column + " == '" + key + "'";
+			
+			// execute the query
+			rs = stmt.executeQuery(query);
+			
+			// go through the column to add each string to the arraylist
+			for(String col : cols) {
+				list.add(rs.getString(col));
+			}
+			
+			// close the result set
+			rs.close();
+		}
+		catch (SQLException e) {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		}
+		
+		// convert the arraylist to a string array
+		return list.toArray(new String[list.size()]);
+	}
+	
 }
