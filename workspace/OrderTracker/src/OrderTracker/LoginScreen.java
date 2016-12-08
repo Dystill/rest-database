@@ -3,7 +3,8 @@ package OrderTracker;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -30,6 +31,8 @@ public class LoginScreen extends JFrame {
 			      foodList,
 			      drinkList;
 	
+	ListSelectionModel listSelectionModel;
+	
 	private final JScrollPane menuScroll = new JScrollPane(), 
 						      foodScroll = new JScrollPane(),
 						      drinkScroll = new JScrollPane();
@@ -50,6 +53,7 @@ public class LoginScreen extends JFrame {
     private final JButton cancel = new JButton("Exit");
     private final JButton logout = new JButton("Logout");
     
+   
     private CardLayout cl = new CardLayout();
     
 	private SQLQuerier query = new SQLQuerier("Restaurant");
@@ -62,7 +66,6 @@ public class LoginScreen extends JFrame {
     	             windowNames =
     	             	{"Login", "Select an item to order", "Order"};
     		
-
 	/****************************
 	 ** Launch the application **
 	 ****************************/
@@ -341,7 +344,14 @@ public class LoginScreen extends JFrame {
 	/***************************************************
 	 ** Action Listeners for the different components **
 	 ***************************************************/
-	
+	// Selecting items on a list
+	public void valueChanged(ListSelectionEvent e) {
+		if (!e.getValueIsAdjusting())
+		{
+			//final List<String> selectedValueList = menuList.getSelectedValueList();
+		}
+	}
+
 	public void createActionListeners(LoginScreen ls) {
 		
 		// switch to the password field when the user presses enter after entering their username
