@@ -14,16 +14,17 @@ public class LoginScreen extends JFrame {
 
 	private JPanel contentPane,		// the main panel to contain every interface
 	               loginPanel,		// for the login window
+	               entryPanel,		// to hold the text fields in the login window
+	               textPanel,		// to hold the user and pass fields
+	               userPanel,		// to hold the username entry field in login
+	               passPanel,		// to hold the password entry field in login
+	               buttonPanel,		// to hold the buttons in the login
 	               menuPanel,		// for the menu window
 	               greetingPanel,	// for the greeting bar in the menu window
 	               allMenuTab,		//	both food and drink items tab
 	               foodTab,			// for the food items tab
 	               drinkTab,		// for the drink items tab
-	               entryPanel,		// to hold the text fields in the login window
-	               textPanel,		// to hold the user and pass fields
-	               userPanel,		// to hold the username entry field in login
-	               passPanel,		// to hold the password entry field in login
-	               buttonPanel;		// to hold the buttons in the login
+	               infoPanel;		// to hold the item info to the right
 	
 	private JList menuList,
 			      foodList,
@@ -57,7 +58,9 @@ public class LoginScreen extends JFrame {
     private boolean isEmployee = true;
     
     private String[] tabNames =
-    	{"All Items", "Order a Food", "Order a Drink"};
+    	             	{"All Items", "Order a Food", "Order a Drink"},
+    	             windowNames =
+    	             	{"Login", "Select an item to order", "Order"};
     		
 
 	/****************************
@@ -94,7 +97,6 @@ public class LoginScreen extends JFrame {
 		contentPane.setBorder(
 				new EmptyBorder(borderSize, borderSize, borderSize, borderSize));
 		setContentPane(contentPane);
-        setTitle("Login");
 		contentPane.setLayout(cl);	// set the main window to a card layout
 		
 		// create each main interface of the program
@@ -106,7 +108,7 @@ public class LoginScreen extends JFrame {
 		contentPane.add(menuPanel, "2");
 		
 		// show the login screen first
-		cl.show(contentPane, "1");
+		switchToCard(1);
 		
 		// add action listeners for all of the buttons and fields
 		createActionListeners(ls);
@@ -118,6 +120,12 @@ public class LoginScreen extends JFrame {
         // removes the incorrect login text
 		incorrectLogin.setVisible(false);
         
+	}
+	
+	// Switch to a different card using the CardLayout
+	public void switchToCard(int card) {
+        setTitle(windowNames[card - 1]);
+		cl.show(contentPane, "" + card);
 	}
 	
 	
@@ -208,20 +216,14 @@ public class LoginScreen extends JFrame {
 		if(lookupLogin("Customers", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
 			isEmployee = false;
-	        loginPanel.setVisible(false);
-	        menuPanel.setVisible(false);
-			cl.show(contentPane, "2");
-	        menuPanel.setVisible(true);
+			switchToCard(2);
 	        pack();
 		}
 		// check the employees table for the login info
 		else if(lookupLogin("Employees", userField.getText(), new String(passField.getPassword()))) {
 			// go to menu item list page
 			isEmployee = true;
-	        loginPanel.setVisible(false);
-	        menuPanel.setVisible(false);
-			cl.show(contentPane, "2");
-	        menuPanel.setVisible(true);
+			switchToCard(2);
 	        pack();
 		}
 		// show text saying the login info was incorrect
@@ -233,6 +235,7 @@ public class LoginScreen extends JFrame {
 	        pack();
 		}
 		
+		// set the greeting message in the menu panel to greet either the customer or employee
 		String greeting = "Hello " + (isEmployee ? "Employee!" : "Customer!");
 		greetingLabel.setText(greeting);
 	}
@@ -371,9 +374,12 @@ public class LoginScreen extends JFrame {
 		clear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				passField.setText("");	// set password field to an empty string
 				userField.setText("");	// set password field to an empty string
+				
 				userField.requestFocus();	// move cursor to the username field
+				
 			}
 		});
 
@@ -389,12 +395,14 @@ public class LoginScreen extends JFrame {
 		logout.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-		        loginPanel.setVisible(false);
-		        menuPanel.setVisible(false);
-				cl.show(contentPane, "1");			// go to the login panel
-				clear.doClick();					// clear the contents of the text fields
+				
+				switchToCard(1);					// go to the login panel
 		        incorrectLogin.setVisible(false);	// remove the incorrect login text if present
-		        loginPanel.setVisible(true);
+		        
+		        buttonPanel.setVisible(false);		// set button panel invisible before clicking clear
+				clear.doClick();					// to clear the contents of the text fields
+				buttonPanel.setVisible(true);		// before making it visible again
+				
 		        pack();
 			}
 		});
