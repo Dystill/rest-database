@@ -234,6 +234,7 @@ public class LoginScreen extends JFrame {
 			
 			getUserInfo("Customers", currentUser);
 			greetingLabel.setText(formatGreeting("Customer"));
+			logout.setText("Logout " + currentUser);
 			
 			switchToCard(2);					// go to menu screen
 			
@@ -248,6 +249,7 @@ public class LoginScreen extends JFrame {
 			
 			getUserInfo("Employees", currentUser);
 			greetingLabel.setText(formatGreeting("Employee"));
+			logout.setText("Logout " + currentUser);
 			
 			switchToCard(2);					// go to menu screen
 			
@@ -294,6 +296,7 @@ public class LoginScreen extends JFrame {
 		greetingLabel.setText("");
 		userField.setText("");
 		passField.setText("");
+		logout.setText("Logout");
 	}
 	
 	
