@@ -21,7 +21,8 @@ public class LoginScreen extends JFrame {
 	               userPanel,		// to hold the username entry field in login
 	               passPanel,		// to hold the password entry field in login
 	               buttonPanel,		// to hold the buttons in the login
-	               menuPanel,		// for the menu window
+	               restaurantPanel,		// for the menu window
+	               menuPanel,
 	               greetingPanel,	// for the greeting bar in the menu window
 	               allMenuTab,		//	both food and drink items tab
 	               foodTab,			// for the food items tab
@@ -110,11 +111,10 @@ public class LoginScreen extends JFrame {
 		// create each main interface of the program
 		createLoginPanel();	// login screen
 		createMenuPanel();	// menu screen
-		createOrderPanel();
 
 		// add each interface to the primary content pane
 		contentPane.add(loginPanel, "1");
-		contentPane.add(menuPanel, "2");
+		contentPane.add(restaurantPanel, "2");
 		contentPane.add(orderPanel, "3");
 		
 		// show the login screen first
@@ -306,9 +306,9 @@ public class LoginScreen extends JFrame {
 	
 	private void createMenuPanel() {
 		
-		// menu panel - greeting
-		menuPanel = new JPanel();
-		menuPanel.setLayout(new BorderLayout());
+		// menu panel 
+		restaurantPanel = new JPanel();
+		restaurantPanel.setLayout(new BorderLayout());
 		
 		// greeting panel
 		greetingPanel = new JPanel();
@@ -318,9 +318,10 @@ public class LoginScreen extends JFrame {
 		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
 		greetingPanel.add(logout, BorderLayout.EAST);
 	    
-		
 		//// Creating the tabs
-
+		menuPanel = new JPanel();
+		menuPanel.setLayout(new BorderLayout());
+		
 		// food and drink items multiple tabs
 		JTabbedPane itemsPanel = new JTabbedPane();
 		
@@ -345,29 +346,37 @@ public class LoginScreen extends JFrame {
 		menuList = populateJList(query.getListOf("MenuItems", "itemname"));
 		menuScroll.setViewportView(menuList);
 		allMenuTab.add(menuScroll, BorderLayout.WEST);
-	    
+		menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 	    // add all food items to the food tab
 	    foodList = populateJList(query.getListOf("FoodItems", "itemname"));
 		foodScroll.setViewportView(foodList);
 		foodTab.add(foodScroll, BorderLayout.WEST);
-	
+		foodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 	    // add all drink items to the drink tab
 	    drinkList = populateJList(query.getListOf("DrinkItems", "itemname"));
 		drinkScroll.setViewportView(drinkList);
 		drinkTab.add(drinkScroll, BorderLayout.WEST);
-		
-		
+		drinkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
 		//// Adding the right side info panel
 		infoPanel = new JPanel();
-		menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		foodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		drinkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		infoPanel.setLayout(new BorderLayout());
 		
+		orderPanel = new JPanel();
+		//orderPanel.setLayout(new FlowLayout());
+		orderPanel.add(new JLabel("TEST"));
+		
+		infoPanel.add(orderPanel, BorderLayout.SOUTH);
 		//// Adding all panels to the main window
 		
 		// add (greeting and food/drink panels) to main menu panel
-		menuPanel.add(greetingPanel, BorderLayout.NORTH);
-		menuPanel.add(itemsPanel, BorderLayout.CENTER);
+		menuPanel.add(infoPanel, BorderLayout.EAST);
+		menuPanel.add(itemsPanel, BorderLayout.WEST);
+	
+		restaurantPanel.add(greetingPanel, BorderLayout.NORTH);
+		restaurantPanel.add(menuPanel, BorderLayout.SOUTH);
 	}
 	
 	// add items of a string array to a JList
@@ -388,35 +397,22 @@ public class LoginScreen extends JFrame {
 		
 		
 	}
-
-	
-	/*********************************************************
-	 ** Methods for creating and processing the Order Panel **
-	 *********************************************************/
-	
-	public void createOrderPanel() {
-		orderPanel = new JPanel();
-		orderPanel.setLayout(new BorderLayout());
-		
-		
-		
-	}
 	
 	
 	/***************************************************
 	 ** Action Listeners for the different components **
 	 ***************************************************/
 	// Selecting items on a list
-	public void valueChanged(ListSelectionEvent e) {
+	/**public void valueChanged(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting())
 		{
 			ListSelectionModel lsmMenu = (ListSelectionModel)e.getSource();
 			
 			// indicate which item on the list is clicked
 			int firstIndex = e.getFirstIndex();
-	        int lastIndex = e.getLastIndex();
-		}
-	}
+			int lastIndex = e.getLastIndex();
+		
+		}**/
 
 	public void createActionListeners(LoginScreen ls) {
 		
