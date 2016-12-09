@@ -1,10 +1,11 @@
 package OrderTracker;
 
 import java.awt.*;
+import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JList;
-import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -33,8 +34,6 @@ public class LoginScreen extends JFrame {
 	private JList menuList,
 			      foodList,
 			      drinkList;
-	
-	ListSelectionModel listSelectionModel;
 	
 	private final JScrollPane menuScroll = new JScrollPane(), 
 						      foodScroll = new JScrollPane(),
@@ -337,7 +336,6 @@ public class LoginScreen extends JFrame {
 	    drinkTab.setLayout(new BorderLayout());
 	    itemsPanel.addTab(tabNames[2], drinkTab);
 		
-	    
 	    //// Adding item lists to each tab
 	    
 		// add all items to the all menu tab
@@ -357,8 +355,10 @@ public class LoginScreen extends JFrame {
 		
 		
 		//// Adding the right side info panel
-		
-	    
+		infoPanel = new JPanel();
+		menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		foodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		drinkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		//// Adding all panels to the main window
 		
@@ -367,7 +367,7 @@ public class LoginScreen extends JFrame {
 		menuPanel.add(itemsPanel, BorderLayout.CENTER);
 	}
 	
-	// add items of a string array to a jlist
+	// add items of a string array to a JList
 	public JList<String> populateJList(String[] list) {
 		
 		// create a list model and add all items in the string array
@@ -405,9 +405,13 @@ public class LoginScreen extends JFrame {
 	 ***************************************************/
 	// Selecting items on a list
 	public void valueChanged(ListSelectionEvent e) {
-		if (!e.getValueIsAdjusting())
+		if (e.getValueIsAdjusting())
 		{
-			//final List<String> selectedValueList = menuList.getSelectedValueList();
+			ListSelectionModel lsmMenu = (ListSelectionModel)e.getSource();
+			
+			// indicate which item on the list is clicked
+			int firstIndex = e.getFirstIndex();
+	        int lastIndex = e.getLastIndex();
 		}
 	}
 
@@ -481,6 +485,5 @@ public class LoginScreen extends JFrame {
 			}
 		});
 		
-	}
-	
+	}	
 }
