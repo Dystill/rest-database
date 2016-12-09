@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JList;
+
 import javax.swing.event.*;
 
 import javax.swing.*;
@@ -29,8 +29,7 @@ public class LoginScreen extends JFrame {
 	               drinkTab,		// for the drink items tab
 	               infoPanel,		// to hold the item info to the right
 	               orderPanel,
-	               orderInfoPanel,
-	               cardEntryPanel;
+	               itemListPanel;
 	
 	private JList menuList,
 			      foodList,
@@ -306,11 +305,11 @@ public class LoginScreen extends JFrame {
 	
 	private void createMenuPanel() {
 		
-		// menu panel 
+		// create the all encompassing restaurant panel 
 		restaurantPanel = new JPanel();
 		restaurantPanel.setLayout(new BorderLayout());
 		
-		// greeting panel
+		// greeting panel with a message at the top
 		greetingPanel = new JPanel();
 		greetingPanel.setLayout(new BorderLayout());
 		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
@@ -318,9 +317,9 @@ public class LoginScreen extends JFrame {
 		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
 		greetingPanel.add(logout, BorderLayout.EAST);
 	    
-		//// Creating the tabs
+		//// Creating the tabs for the item lists
 		menuPanel = new JPanel();
-		menuPanel.setLayout(new BorderLayout());
+		menuPanel.setLayout(new GridLayout(1, 2));
 		
 		// food and drink items multiple tabs
 		JTabbedPane itemsPanel = new JTabbedPane();
@@ -363,20 +362,24 @@ public class LoginScreen extends JFrame {
 		//// Adding the right side info panel
 		infoPanel = new JPanel();
 		infoPanel.setLayout(new BorderLayout());
+		infoPanel.setMinimumSize(infoPanel.getPreferredSize());
 		
 		orderPanel = new JPanel();
-		//orderPanel.setLayout(new FlowLayout());
-		orderPanel.add(new JLabel("TEST"));
+		orderPanel.add(order);
 		
-		infoPanel.add(orderPanel, BorderLayout.SOUTH);
+		infoPanel.add(order, BorderLayout.SOUTH);
+		
 		//// Adding all panels to the main window
+		itemListPanel = new JPanel();
+		itemListPanel.add(itemsPanel);
 		
 		// add (greeting and food/drink panels) to main menu panel
-		menuPanel.add(infoPanel, BorderLayout.EAST);
-		menuPanel.add(itemsPanel, BorderLayout.WEST);
+		menuPanel.add(itemListPanel);
+		menuPanel.add(infoPanel);
 	
 		restaurantPanel.add(greetingPanel, BorderLayout.NORTH);
 		restaurantPanel.add(menuPanel, BorderLayout.SOUTH);
+		
 	}
 	
 	// add items of a string array to a JList
