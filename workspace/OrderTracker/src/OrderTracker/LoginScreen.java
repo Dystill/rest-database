@@ -14,18 +14,18 @@ public class LoginScreen extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private final JPanel contentPane = new JPanel(),		// the main panel to contain every interface
+	private final JPanel contentPane = new JPanel(),	// the main panel to contain every interface
 		                 loginPanel = new JPanel(),		// for the login window
 		                 entryPanel = new JPanel(),		// to hold the text fields in the login window
 		                 textPanel = new JPanel(),		// to hold the user and pass fields
 		                 userPanel = new JPanel(),		// to hold the username entry field in login
 		                 passPanel = new JPanel(),		// to hold the password entry field in login
-		                 buttonPanel = new JPanel(),		// to hold the buttons in the login
-		                 restaurantPanel = new JPanel(),		// for the menu window
-		                 menuPanel = new JPanel(),
+		                 buttonPanel = new JPanel(),	// to hold the buttons in the login
+		                 restaurantPanel = new JPanel(),// for the menu window
+		                 menuPanel = new JPanel(),		// for items and infoPanel
 		                 greetingPanel = new JPanel(),	// for the greeting bar in the menu window
-		                 allItemsTab = new JPanel(),		//	both food and drink items tab
-		                 foodTab = new JPanel(),			// for the food items tab
+		                 allItemsTab = new JPanel(),	//	both food and drink items tab
+		                 foodTab = new JPanel(),		// for the food items tab
 		                 drinkTab = new JPanel(),		// for the drink items tab
 		                 infoPanel = new JPanel(),		// to hold the item info to the right
 		                 itemListPanel = new JPanel(),
@@ -56,14 +56,14 @@ public class LoginScreen extends JFrame {
 			             rating = new JLabel(),
 			             calories = new JLabel(),
 			             is = new JLabel(),
-			             type = new JLabel();
+			             type = new JLabel(),
+						 itemLabel = new JLabel("     "); ///////////TEST
 
     private final JButton submit = new JButton("Login"),
     		              clear = new JButton("Clear"),
     		              cancel = new JButton("Exit"),
     		              logout = new JButton("Logout"),
     		              order = new JButton("Order Item");
-    
    
     private CardLayout cl = new CardLayout();
     
@@ -300,9 +300,7 @@ public class LoginScreen extends JFrame {
 	 *****************************************/
 	
 	private void createMenuPanel() {
-		
-		
-		
+			
 		// set layouts for all panels
 		restaurantPanel.setLayout(new BorderLayout());	// to hold the entire user interface
 		greetingPanel.setLayout(new BorderLayout());	// to hold the greeting message and logout button
@@ -310,16 +308,12 @@ public class LoginScreen extends JFrame {
 		infoPanel.setLayout(new BorderLayout());		// to hold the selected item's info and order button
 		descriptionPanel.setLayout(new BoxLayout(descriptionPanel, BoxLayout.PAGE_AXIS));	// to hold the item's descriptive info
 		
-		
-		
 		// add proper spacing for the greeting panel
 		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
 		
 		// add the greeting and the logout button to the greeting panel
 		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
 		greetingPanel.add(logout, BorderLayout.EAST);
-	    
-		
 		
 		// create the tabs for the item lists
 		itemsPanel.addTab(tabNames[0], allItemsTab);
@@ -346,14 +340,12 @@ public class LoginScreen extends JFrame {
 		foodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		drinkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		
-		
 		//// Adding the right side info panel
 		infoPanel.setMinimumSize(infoPanel.getPreferredSize());
 		
 		///////////////////////////////////////////////////
 		// test - descriptionPanel updating and item info retrieval
-		JButton test = new JButton("Big Shiny Red Button");
+		JButton test = new JButton("Click for Item Description");
 		test.setBackground(Color.RED);
 		test.setForeground(Color.WHITE);
 		test.addActionListener(new ActionListener() {
@@ -366,15 +358,17 @@ public class LoginScreen extends JFrame {
 		infoPanel.add(test, BorderLayout.NORTH);
 		
 		///////////////////////////////////////////////////
-
+		descriptionPanel.add(itemLabel);
 		descriptionPanel.add(price);
 		descriptionPanel.add(rating);
 		descriptionPanel.add(calories);
 		descriptionPanel.add(is);
 		descriptionPanel.add(type);
 		
+		
 		infoPanel.add(descriptionPanel, BorderLayout.CENTER);
 		infoPanel.add(order, BorderLayout.SOUTH);
+		
 		
 		//// Adding all panels to the main window
 		itemListPanel.add(itemsPanel);
@@ -466,22 +460,10 @@ public class LoginScreen extends JFrame {
 				columns);
 	}
 	
-	
 	/***************************************************
 	 ** Action Listeners for the different components **
 	 ***************************************************/
 	// Selecting items on a list
-	/**public void valueChanged(ListSelectionEvent e) {
-		if (e.getValueIsAdjusting())
-		{
-			ListSelectionModel lsmMenu = (ListSelectionModel)e.getSource();
-			
-			// indicate which item on the list is clicked
-			int firstIndex = e.getFirstIndex();
-			int lastIndex = e.getLastIndex();
-		
-		}**/
-
 	public void createActionListeners(LoginScreen ls) {
 		
 		// switch to the password field when the user presses enter after entering their username
@@ -549,8 +531,40 @@ public class LoginScreen extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-			}
+			}		
 		});
 		
+		menuList.addListSelectionListener(new ListSelectionListener() {
+			 
+			@Override
+	         public void valueChanged(ListSelectionEvent arg0) {
+	                if (!arg0.getValueIsAdjusting()) {
+	                	itemLabel.setText(menuList.getSelectedValue().toString());
+	                }
+	            }
+	        });
+		
+		foodList.addListSelectionListener(new ListSelectionListener() {
+			 
+			@Override
+	         public void valueChanged(ListSelectionEvent arg0) {
+	                if (!arg0.getValueIsAdjusting()) {
+	                	itemLabel.setText(foodList.getSelectedValue().toString());
+	                }
+	            }
+	        });
+		
+		drinkList.addListSelectionListener(new ListSelectionListener() {
+			 
+			@Override
+	         public void valueChanged(ListSelectionEvent arg0) {
+	                if (!arg0.getValueIsAdjusting()) {
+	                	itemLabel.setText(drinkList.getSelectedValue().toString());
+	                }
+	            }
+	        });
+			
+		}
+		
 	}	
-}
+
