@@ -14,26 +14,28 @@ public class LoginScreen extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private JPanel contentPane,		// the main panel to contain every interface
-	               loginPanel,		// for the login window
-	               entryPanel,		// to hold the text fields in the login window
-	               textPanel,		// to hold the user and pass fields
-	               userPanel,		// to hold the username entry field in login
-	               passPanel,		// to hold the password entry field in login
-	               buttonPanel,		// to hold the buttons in the login
-	               restaurantPanel,		// for the menu window
-	               menuPanel,
-	               greetingPanel,	// for the greeting bar in the menu window
-	               allMenuTab,		//	both food and drink items tab
-	               foodTab,			// for the food items tab
-	               drinkTab,		// for the drink items tab
-	               infoPanel,		// to hold the item info to the right
-	               orderPanel,
-	               itemListPanel;
+	private final JPanel contentPane = new JPanel(),		// the main panel to contain every interface
+		                 loginPanel = new JPanel(),		// for the login window
+		                 entryPanel = new JPanel(),		// to hold the text fields in the login window
+		                 textPanel = new JPanel(),		// to hold the user and pass fields
+		                 userPanel = new JPanel(),		// to hold the username entry field in login
+		                 passPanel = new JPanel(),		// to hold the password entry field in login
+		                 buttonPanel = new JPanel(),		// to hold the buttons in the login
+		                 restaurantPanel = new JPanel(),		// for the menu window
+		                 menuPanel = new JPanel(),
+		                 greetingPanel = new JPanel(),	// for the greeting bar in the menu window
+		                 allItemsTab = new JPanel(),		//	both food and drink items tab
+		                 foodTab = new JPanel(),			// for the food items tab
+		                 drinkTab = new JPanel(),		// for the drink items tab
+		                 infoPanel = new JPanel(),		// to hold the item info to the right
+		                 itemListPanel = new JPanel(),
+		                 descriptionPanel = new JPanel();
 	
 	private JList menuList,
 			      foodList,
 			      drinkList;
+
+	private final JTabbedPane itemsPanel = new JTabbedPane();
 	
 	private final JScrollPane menuScroll = new JScrollPane(), 
 						      foodScroll = new JScrollPane(),
@@ -44,11 +46,17 @@ public class LoginScreen extends JFrame {
 	
 	private final JLabel userLabel = new JLabel("Username"),
 	                     passLabel = new JLabel("Password"),
-	                     greetingLabel = new JLabel("Hello", SwingConstants.CENTER),
 	                     incorrectLogin = new JLabel(""),
+	                     greetingLabel = new JLabel("Hello", SwingConstants.CENTER),
 	    	             welcomeLabel = new JLabel(
 	    	            		 "Welcome to the Restaurant Order Tracking System!",
 	    	            		 SwingConstants.CENTER);
+	
+	private final JLabel price = new JLabel(),
+			             rating = new JLabel(),
+			             calories = new JLabel(),
+			             is = new JLabel(),
+			             type = new JLabel();
 
     private final JButton submit = new JButton("Login"),
     		              clear = new JButton("Clear"),
@@ -101,7 +109,6 @@ public class LoginScreen extends JFrame {
 		setBounds(100, 100, 450, 300);
 		
 		// create the main window
-		contentPane = new JPanel();
 		contentPane.setBorder(
 				new EmptyBorder(borderSize, borderSize, borderSize, borderSize));
 		setContentPane(contentPane);
@@ -114,10 +121,9 @@ public class LoginScreen extends JFrame {
 		// add each interface to the primary content pane
 		contentPane.add(loginPanel, "1");
 		contentPane.add(restaurantPanel, "2");
-		contentPane.add(orderPanel, "3");
 		
 		// show the login screen first
-		switchToCard(1);
+		switchToCard(2);
 		
 		// add action listeners for all of the buttons and fields
 		createActionListeners(ls);
@@ -144,18 +150,12 @@ public class LoginScreen extends JFrame {
 	
 	public void createLoginPanel() {
 		// create a new panel with a border layout
-		loginPanel = new JPanel();
 		loginPanel.setLayout(new BorderLayout());
 		
 		// create a panel with entry fields
-		entryPanel = new JPanel();
 		entryPanel.setLayout(new FlowLayout());
 		
-		textPanel = new JPanel();
 		textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-
-		// create a panel for the username
-		userPanel = new JPanel(new FlowLayout());
 		
 		// align and size the user textfield
 		userField.setHorizontalAlignment(SwingConstants.LEFT);
@@ -164,9 +164,6 @@ public class LoginScreen extends JFrame {
 		// add label and textfield to the username panel
 		userPanel.add(userLabel);
 		userPanel.add(userField);
-
-		// create a panel for the password
-		passPanel = new JPanel(new FlowLayout());
 		
 		// align and size the password field
 		passField.setHorizontalAlignment(SwingConstants.LEFT);
@@ -177,7 +174,6 @@ public class LoginScreen extends JFrame {
 		passPanel.add(passField);
 		
 		// create and add a button panel with login and cancel
-		buttonPanel = new JPanel(new FlowLayout());	
 		buttonPanel.add(cancel);	
 		buttonPanel.add(clear);
 		buttonPanel.add(submit);
@@ -305,72 +301,82 @@ public class LoginScreen extends JFrame {
 	
 	private void createMenuPanel() {
 		
-		// create the all encompassing restaurant panel 
-		restaurantPanel = new JPanel();
-		restaurantPanel.setLayout(new BorderLayout());
 		
-		// greeting panel with a message at the top
-		greetingPanel = new JPanel();
-		greetingPanel.setLayout(new BorderLayout());
+		
+		// set layouts for all panels
+		restaurantPanel.setLayout(new BorderLayout());	// to hold the entire user interface
+		greetingPanel.setLayout(new BorderLayout());	// to hold the greeting message and logout button
+		menuPanel.setLayout(new GridLayout(1, 2));		// to hold the tabbed menu and the info panel
+		infoPanel.setLayout(new BorderLayout());		// to hold the selected item's info and order button
+		descriptionPanel.setLayout(new BoxLayout(descriptionPanel, BoxLayout.PAGE_AXIS));	// to hold the item's descriptive info
+		
+		
+		
+		// add proper spacing for the greeting panel
 		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
 		
+		// add the greeting and the logout button to the greeting panel
 		greetingPanel.add(greetingLabel, BorderLayout.CENTER);
 		greetingPanel.add(logout, BorderLayout.EAST);
 	    
-		//// Creating the tabs for the item lists
-		menuPanel = new JPanel();
-		menuPanel.setLayout(new GridLayout(1, 2));
 		
-		// food and drink items multiple tabs
-		JTabbedPane itemsPanel = new JTabbedPane();
 		
-		// all menu items tab
-		allMenuTab = new JPanel();
-		allMenuTab.setLayout(new BorderLayout());
-		itemsPanel.addTab(tabNames[0], allMenuTab);
-	
-		// food items tab
-		foodTab = new JPanel();
-		foodTab.setLayout(new BorderLayout());
+		// create the tabs for the item lists
+		itemsPanel.addTab(tabNames[0], allItemsTab);
 	    itemsPanel.addTab(tabNames[1], foodTab);
-	  	  
-	    // drink items tab
-	    drinkTab = new JPanel();
-	    drinkTab.setLayout(new BorderLayout());
 	    itemsPanel.addTab(tabNames[2], drinkTab);
-		
-	    //// Adding item lists to each tab
 	    
-		// add all items to the all menu tab
+		// add all items to each of the lists
 		menuList = populateJList(query.getListOf("MenuItems", "itemname"));
-		menuScroll.setViewportView(menuList);
-		allMenuTab.add(menuScroll, BorderLayout.WEST);
-		menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-	    // add all food items to the food tab
 	    foodList = populateJList(query.getListOf("FoodItems", "itemname"));
-		foodScroll.setViewportView(foodList);
-		foodTab.add(foodScroll, BorderLayout.WEST);
-		foodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-	    // add all drink items to the drink tab
 	    drinkList = populateJList(query.getListOf("DrinkItems", "itemname"));
+	    
+	    // make a scrollbar for each list
+		menuScroll.setViewportView(menuList);
+		foodScroll.setViewportView(foodList);
 		drinkScroll.setViewportView(drinkList);
+		
+	    // add each scrolling list to their respective tabs
+		allItemsTab.add(menuScroll, BorderLayout.WEST);
+		foodTab.add(foodScroll, BorderLayout.WEST);
 		drinkTab.add(drinkScroll, BorderLayout.WEST);
+		
+		// set the selection modes for each list
+		menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		foodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		drinkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+		
+		
 		//// Adding the right side info panel
-		infoPanel = new JPanel();
-		infoPanel.setLayout(new BorderLayout());
 		infoPanel.setMinimumSize(infoPanel.getPreferredSize());
 		
-		orderPanel = new JPanel();
-		orderPanel.add(order);
+		///////////////////////////////////////////////////
+		// test - descriptionPanel updating and item info retrieval
+		JButton test = new JButton("Big Shiny Red Button");
+		test.setBackground(Color.RED);
+		test.setForeground(Color.WHITE);
+		test.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateItemInfo("BOTTLED WATER");		// how to update info in the description panel
+			}
+		});
+		infoPanel.add(test, BorderLayout.NORTH);
 		
+		///////////////////////////////////////////////////
+
+		descriptionPanel.add(price);
+		descriptionPanel.add(rating);
+		descriptionPanel.add(calories);
+		descriptionPanel.add(is);
+		descriptionPanel.add(type);
+		
+		infoPanel.add(descriptionPanel, BorderLayout.CENTER);
 		infoPanel.add(order, BorderLayout.SOUTH);
 		
 		//// Adding all panels to the main window
-		itemListPanel = new JPanel();
 		itemListPanel.add(itemsPanel);
 		
 		// add (greeting and food/drink panels) to main menu panel
@@ -396,10 +402,42 @@ public class LoginScreen extends JFrame {
 	
 	// method for updating the info panel with item information
 	public void updateItemInfo(String itemname) {
+		infoPanel.setVisible(false);
 		
+		String[] info = getItemInfo("MenuItems", itemname);
+
+		price.setText("Price: $" + info[0]);
+		rating.setText("Rating: " + info[1] + "/5");
+		calories.setText("Calories: " + info[2]);
 		
+		if(query.searchFor("FoodItems", "itemname", itemname)){
+			if(getItemInfo("FoodItems", itemname)[0].equals("1")) {
+				is.setText("VEGETARIAN");
+				is.setVisible(true);
+			}
+			else {
+				is.setVisible(false);
+			}
+			type.setVisible(false);
+		}
+		else {
+			String[] extrainfo = getItemInfo("DrinkItems", itemname);
+
+			if(extrainfo[0].equals("1")) {
+				is.setText("DIET");
+				is.setVisible(true);
+			}
+			else {
+				is.setVisible(false);
+			}
+			type.setText(extrainfo[1]);
+			type.setVisible(true);
+		}
 		
-		
+		order.setText("Order " + itemname);
+
+		descriptionPanel.repaint();
+		infoPanel.setVisible(true);
 	}
 	
 	// obtains the extra data for an item from the specified table
@@ -422,7 +460,7 @@ public class LoginScreen extends JFrame {
 		}
 		
 		return query.getRowItems(
-				"MenuItems",
+				table,
 				"itemname",
 				itemname,
 				columns);
