@@ -57,7 +57,8 @@ public class LoginScreen extends JFrame {
 			             calories = new JLabel(),
 			             is = new JLabel(),
 			             type = new JLabel(),
-						 itemLabel = new JLabel("     ");
+						 itemLabel = new JLabel(
+								 "Click an item to view its details!", SwingConstants.CENTER);
 
     private final JButton submit = new JButton("Login"),
     		              clear = new JButton("Clear"),
@@ -123,7 +124,7 @@ public class LoginScreen extends JFrame {
 		contentPane.add(restaurantPanel, "2");
 		
 		// show the login screen first
-		switchToCard(2);
+		switchToCard(1);
 		
 		// add action listeners for all of the buttons and fields
 		createActionListeners(ls);
@@ -291,7 +292,16 @@ public class LoginScreen extends JFrame {
 		greetingLabel.setText("");
 		userField.setText("");
 		passField.setText("");
-		logout.setText("Logout");
+		/*
+		price.setText("");
+		rating.setText("");
+		calories.setText("");
+		is.setText("");
+		type.setText("");
+		*/
+		itemLabel.setText("Click an item to view its details!");
+		descriptionPanel.setVisible(false);
+		order.setVisible(false);
 	}
 	
 	
@@ -343,32 +353,21 @@ public class LoginScreen extends JFrame {
 		//// Adding the right side info panel
 		infoPanel.setMinimumSize(infoPanel.getPreferredSize());
 		
-		///////////////////////////////////////////////////
-		// test - descriptionPanel updating and item info retrieval
-		JButton test = new JButton("Click for Item Description");
-		test.setBackground(Color.RED);
-		test.setForeground(Color.WHITE);
-		test.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				updateItemInfo("BOTTLED WATER");		// how to update info in the description panel
-			}
-		});
-		infoPanel.add(test, BorderLayout.NORTH);
+		itemLabel.setBorder(new EmptyBorder(borderSize/2, borderSize/2, borderSize/2, borderSize/2));
 		
-		///////////////////////////////////////////////////
-		descriptionPanel.add(itemLabel);
+		// adding text labels to the description panel
 		descriptionPanel.add(price);
 		descriptionPanel.add(rating);
 		descriptionPanel.add(calories);
 		descriptionPanel.add(is);
 		descriptionPanel.add(type);
-		
+		descriptionPanel.setVisible(false);
 		
 		// add info description and order button
+		infoPanel.add(itemLabel, BorderLayout.NORTH);
 		infoPanel.add(descriptionPanel, BorderLayout.CENTER);
 		infoPanel.add(order, BorderLayout.SOUTH);
+		order.setVisible(false);
 		
 		//// Adding all panels to the main window
 		itemListPanel.add(itemsPanel);
@@ -396,7 +395,8 @@ public class LoginScreen extends JFrame {
 	
 	// method for updating the info panel with item information
 	public void updateItemInfo(String itemname) {
-		infoPanel.setVisible(false);
+		descriptionPanel.setVisible(false);
+		order.setVisible(false);
 		
 		String[] info = getItemInfo("MenuItems", itemname);
 
@@ -431,7 +431,8 @@ public class LoginScreen extends JFrame {
 		order.setText("Order " + itemname);
 
 		descriptionPanel.repaint();
-		infoPanel.setVisible(true);
+		descriptionPanel.setVisible(true);
+		order.setVisible(true);
 	}
 	
 	// obtains the extra data for an item from the specified table
