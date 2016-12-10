@@ -57,7 +57,7 @@ public class LoginScreen extends JFrame {
 			             calories = new JLabel(),
 			             is = new JLabel(),
 			             type = new JLabel(),
-						 itemLabel = new JLabel("     "); ///////////TEST
+						 itemLabel = new JLabel("     ");
 
     private final JButton submit = new JButton("Login"),
     		              clear = new JButton("Clear"),
@@ -366,9 +366,9 @@ public class LoginScreen extends JFrame {
 		descriptionPanel.add(type);
 		
 		
+		// add info description and order button
 		infoPanel.add(descriptionPanel, BorderLayout.CENTER);
 		infoPanel.add(order, BorderLayout.SOUTH);
-		
 		
 		//// Adding all panels to the main window
 		itemListPanel.add(itemsPanel);
@@ -534,37 +534,45 @@ public class LoginScreen extends JFrame {
 			}		
 		});
 		
+		// gets string of item clicked in menuList
 		menuList.addListSelectionListener(new ListSelectionListener() {
 			 
 			@Override
 	         public void valueChanged(ListSelectionEvent arg0) {
 	                if (!arg0.getValueIsAdjusting()) {
 	                	itemLabel.setText(menuList.getSelectedValue().toString());
+	                	String itemname = itemLabel.getText();
+	                	updateItemInfo(itemname);
 	                }
 	            }
 	        });
 		
+		// gets string of item clicked in foodList
 		foodList.addListSelectionListener(new ListSelectionListener() {
 			 
 			@Override
 	         public void valueChanged(ListSelectionEvent arg0) {
 	                if (!arg0.getValueIsAdjusting()) {
 	                	itemLabel.setText(foodList.getSelectedValue().toString());
+	                	String itemname = itemLabel.getText();
+	                	updateItemInfo(itemname);
 	                }
 	            }
 	        });
 		
+		// gets string of item clicked in drinkList
 		drinkList.addListSelectionListener(new ListSelectionListener() {
 			 
 			@Override
 	         public void valueChanged(ListSelectionEvent arg0) {
 	                if (!arg0.getValueIsAdjusting()) {
 	                	itemLabel.setText(drinkList.getSelectedValue().toString());
+	                	String itemname = itemLabel.getText();
+	                	updateItemInfo(itemname);
 	                }
 	            }
 	        });
 			
 		}
-		
 	}	
 
