@@ -399,6 +399,33 @@ public class LoginScreen extends JFrame {
 		
 		
 		
+		
+	}
+	
+	// obtains the extra data for an item from the specified table
+	public String[] getItemInfo(String table, String itemname) {
+		
+		String[] columns = {""};
+		
+		switch(table) {
+			case "MenuItems":
+				columns = new String[]{"price", "rating", "calories"};
+				break;
+			case "FoodItems":
+				columns = new String[]{"isvegetarian"};
+				break;
+			case "DrinkItems":
+				columns = new String[]{"isdiet", "drinktype"};
+				break;
+			default:
+				return null;
+		}
+		
+		return query.getRowItems(
+				"MenuItems",
+				"itemname",
+				itemname,
+				columns);
 	}
 	
 	
@@ -483,7 +510,7 @@ public class LoginScreen extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				switchToCard(3);
+				
 			}
 		});
 		
