@@ -127,7 +127,7 @@ public class LoginScreen extends JFrame {
 		contentPane.add(restaurantPanel, "2");
 		
 		// show the login screen first
-		switchToCard(2);
+		switchToCard(1);
 		
 		// add action listeners for all of the buttons and fields
 		createActionListeners(ls);
@@ -250,7 +250,7 @@ public class LoginScreen extends JFrame {
 			greetingLabel.setText(formatGreeting("Employee"));
 			logout.setText("Logout " + currentUser);
 			
-			switchToCard(2);					// go to menu screen
+			switchToCard(2);	// go to menu screen
 			
 	        pack();
 		}
@@ -265,9 +265,11 @@ public class LoginScreen extends JFrame {
 
 	}
 	
+	// create the welcome greeting in the menu screen
 	private String formatGreeting(String type) {
 		String greeting;
 
+		// formatting the name to a proper case
 		greeting = "Hello " + fname.substring(0, 1).toUpperCase()
 				+ fname.substring(1).toLowerCase() + "! " +
 				"(" + type + " #" + personid + ")";
@@ -275,14 +277,16 @@ public class LoginScreen extends JFrame {
 		return greeting;
 	}
 	
-	// retrieve and save the current user's information
+	// retrieve the current user's information
 	private void getUserInfo(String table, String user) {
 		
+		// search the database for the user's information
 		String[] pidfnln = query.getRowItems(
 				"People natural join " + table,
 				((table.equals("Customers")) ? "c" : "e") + "username",
 				user, new String[]{"personid", "fname", "lname"});
 
+		// store the inormation as variables
 		personid = pidfnln[0];
 		fname = pidfnln[1];
 		lname = pidfnln[2];
@@ -291,13 +295,21 @@ public class LoginScreen extends JFrame {
 	
 	// reset any fields and labels that use the user's info.
 	private void resetUserLoginInfo() {
+		
+		// reset stored user info
 		currentUser = fname = lname = personid = "";
+		
+		// reset stored item information
 		itemprice = 0;
 		itemname = "";
+		
+		// reset all text fields
 		greetingLabel.setText("");
 		userField.setText("");
 		passField.setText("");
 		itemLabel.setText("Click an item to view its details!");
+		
+		// hide item related panels
 		descriptionPanel.setVisible(false);
 		order.setVisible(false);
 	}
@@ -374,6 +386,7 @@ public class LoginScreen extends JFrame {
 		menuPanel.add(itemListPanel);
 		menuPanel.add(infoPanel);
 	
+		// add the greeting panel and the menu panel to the window
 		restaurantPanel.add(greetingPanel, BorderLayout.NORTH);
 		restaurantPanel.add(menuPanel, BorderLayout.SOUTH);
 		
@@ -393,18 +406,24 @@ public class LoginScreen extends JFrame {
 	
 	// method for updating the info panel with item information
 	public void updateItemInfo(String itemname) {
+		
+		// hide the panel before updating it
 		descriptionPanel.setVisible(false);
 		order.setVisible(false);
 		
+		// get the info from the database as a string array
 		String[] info = getItemInfo("MenuItems", itemname);
 		
+		// store the price and itemname directly
 		itemprice = Float.parseFloat(info[0]);
 		this.itemname = itemname;
 
+		// set the text of their respective jlabel with the updated information
 		price.setText("Price: $" + info[0]);
 		rating.setText("Rating: " + info[1] + "/5");
 		calories.setText("Calories: " + info[2]);
 		
+		// check if the item was vegetarian or diet and show labels as appropriate
 		if(query.searchFor("FoodItems", "itemname", itemname)){
 			if(getItemInfo("FoodItems", itemname)[0].equals("1")) {
 				is.setText("VEGETARIAN");
@@ -429,8 +448,10 @@ public class LoginScreen extends JFrame {
 			type.setVisible(true);
 		}
 		
+		// put the itemname in the order button
 		order.setText("Order " + itemname);
 
+		// update and show the panel
 		descriptionPanel.repaint();
 		descriptionPanel.setVisible(true);
 		order.setVisible(true);
@@ -439,22 +460,28 @@ public class LoginScreen extends JFrame {
 	// obtains the extra data for an item from the specified table
 	public String[] getItemInfo(String table, String itemname) {
 		
+		// create an empty string array
 		String[] columns = {""};
 		
+		// set the string array depending on the type of table being retrieved
 		switch(table) {
 			case "MenuItems":
+				// get the price, rating, and calorie count from the menu table
 				columns = new String[]{"price", "rating", "calories"};
 				break;
 			case "FoodItems":
+				// check if the food is vegetarian from the food table
 				columns = new String[]{"isvegetarian"};
 				break;
 			case "DrinkItems":
+				// check if the drink is diet or if it is alcoholic from the drink table
 				columns = new String[]{"isdiet", "drinktype"};
 				break;
 			default:
 				return null;
 		}
 		
+		// make the query
 		return query.getRowItems(
 				table,
 				"itemname",
@@ -465,8 +492,10 @@ public class LoginScreen extends JFrame {
 	// adds a order to the database
 	public void addOrderToDatabase(String cardnumber){
 
-		DecimalFormat df = new DecimalFormat("#####.00");
+		// create a decimal format for the price
+		DecimalFormat df = new DecimalFormat("###.00");
 		
+		// format the values to fit into a query
 		String values =
 				(query.countRowsIn("Orders") + 1) + ", " +
 				Integer.parseInt(cardnumber) + ", '" + 
@@ -474,15 +503,29 @@ public class LoginScreen extends JFrame {
 				df.format(calculatePriceTotal()) + ", " + 
 				"DATETIME('now')";
 		
+		// make the update to the database
 		query.addRowTo("Orders", values);
 	}
 	
 	// calculates the combined total for an order after a discount
 	public float calculatePriceTotal() {
 		float total = itemprice;
+		int percent = 0;
 		
-		// calculate discount if employee
+		// check if the user is an employee
+		if(isEmployee) {
+			// get the percent of the employee's discount from the database
+			percent = Integer.parseInt(query.getRowItems(
+					"Employees",
+					"personid",
+					personid,
+					new String[]{"discount"})[0]);
+		}
 		
+		// apply the discount to the item
+		total -= (total * ((float)percent / (float)100));
+		
+		// return the new total
 		return total;
 	}
 	
