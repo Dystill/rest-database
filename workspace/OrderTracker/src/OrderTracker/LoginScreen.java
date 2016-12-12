@@ -627,13 +627,19 @@ public class LoginScreen extends JFrame {
 			}
 		});
 		
+		// process and add order to the database when user clicks the order button
 		order.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// get the cardnumber currently in the card textfield
 				String cardnum = cardNumField.getText();
+				
+				// check if that number is valid
 				if(checkCardValidity(personid, cardnum)){
+					// add order information to the database
 					addOrderToDatabase(cardnum);
+					// reset the card field
 					cardNumField.setText("");
 				}
 				else {

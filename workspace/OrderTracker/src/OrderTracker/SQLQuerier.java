@@ -223,11 +223,11 @@ public class SQLQuerier {
 	
 	public void addRowTo(String table, String values){
 
-		System.out.println("adding order");
+		// System.out.println("adding order");
 		
 		String query = "insert into " + table + " values (" + values + ")";
 		
-		System.out.println(query);
+		// System.out.println(query);
 		
 		try {
 	        stmt = con.createStatement();
@@ -248,18 +248,18 @@ public class SQLQuerier {
 	        stmt = con.createStatement();
 			ResultSet rs;
 
-			System.out.println("counting rows");
+			// System.out.println("counting rows");
 			
 			String query = "select\tcount(*)\tcount\tfrom " + table;	// for some reason \t works, but not spaces.
 
-			System.out.println(query);
+			// System.out.println(query);
 			
 			// execute the query
 			rs = stmt.executeQuery(query);
 			
 			count = rs.getInt("count");
 			
-			System.out.println(count + "");
+			// System.out.println(count + " rows");
 			
 			// close the statement connection
 	        if (stmt != null) stmt.close();
