@@ -29,7 +29,9 @@ public class LoginScreen extends JFrame {
 		                 drinkTab = new JPanel(),		// for the drink items tab
 		                 infoPanel = new JPanel(),		// to hold the item info to the right
 		                 itemListPanel = new JPanel(),
-		                 descriptionPanel = new JPanel();
+		                 itemDetailsPanel = new JPanel(),
+		                 descPanel = new JPanel(),
+		                 cardEntryPanel = new JPanel();
 	
 	private JList menuList,
 			      foodList,
@@ -41,7 +43,9 @@ public class LoginScreen extends JFrame {
 						      foodScroll = new JScrollPane(),
 						      drinkScroll = new JScrollPane();
 	
-	private final JTextField userField = new JTextField();
+	private final JTextField userField = new JTextField(),
+			                 cardNumField = new JTextField();
+	
 	private final JPasswordField passField = new JPasswordField();
 	
 	private final JLabel userLabel = new JLabel("Username"),
@@ -127,7 +131,7 @@ public class LoginScreen extends JFrame {
 		contentPane.add(restaurantPanel, "2");
 		
 		// show the login screen first
-		switchToCard(1);
+		switchToCard(2);
 		
 		// add action listeners for all of the buttons and fields
 		createActionListeners(ls);
@@ -310,7 +314,7 @@ public class LoginScreen extends JFrame {
 		itemLabel.setText("Click an item to view its details!");
 		
 		// hide item related panels
-		descriptionPanel.setVisible(false);
+		descPanel.setVisible(false);
 		order.setVisible(false);
 	}
 	
@@ -326,7 +330,6 @@ public class LoginScreen extends JFrame {
 		greetingPanel.setLayout(new BorderLayout());	// to hold the greeting message and logout button
 		menuPanel.setLayout(new GridLayout(1, 2));		// to hold the tabbed menu and the info panel
 		infoPanel.setLayout(new BorderLayout());		// to hold the selected item's info and order button
-		descriptionPanel.setLayout(new BoxLayout(descriptionPanel, BoxLayout.PAGE_AXIS));	// to hold the item's descriptive info
 		
 		// add proper spacing for the greeting panel
 		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
@@ -372,11 +375,13 @@ public class LoginScreen extends JFrame {
 		descriptionPanel.add(is);
 		descriptionPanel.add(type);
 		descriptionPanel.setVisible(false);
+		descPanel.setVisible(false);
 		
 		// add info description and order button
 		infoPanel.add(itemLabel, BorderLayout.NORTH);
-		infoPanel.add(descriptionPanel, BorderLayout.CENTER);
+		infoPanel.add(descPanel, BorderLayout.CENTER);
 		infoPanel.add(order, BorderLayout.SOUTH);
+		infoPanel.setBorder(new EmptyBorder(borderSize/2, borderSize/2, borderSize/2, borderSize/2));
 		order.setVisible(false);
 		
 		//// Adding all panels to the main window
@@ -408,7 +413,7 @@ public class LoginScreen extends JFrame {
 	public void updateItemInfo(String itemname) {
 		
 		// hide the panel before updating it
-		descriptionPanel.setVisible(false);
+		descPanel.setVisible(false);
 		order.setVisible(false);
 		
 		// get the info from the database as a string array
@@ -452,8 +457,8 @@ public class LoginScreen extends JFrame {
 		order.setText("Order " + itemname);
 
 		// update and show the panel
-		descriptionPanel.repaint();
-		descriptionPanel.setVisible(true);
+		itemDetailsPanel.repaint();
+		descPanel.setVisible(true);
 		order.setVisible(true);
 	}
 	
