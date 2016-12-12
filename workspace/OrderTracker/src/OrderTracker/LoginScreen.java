@@ -31,7 +31,7 @@ public class LoginScreen extends JFrame {
 		                 itemListPanel = new JPanel(),
 		                 itemDetailsPanel = new JPanel(),
 		                 descPanel = new JPanel(),
-		                 cardEntryPanel = new JPanel();
+		                 cardEntryPanel = new JPanel(); // hold the card number 
 	
 	private JList menuList,
 			      foodList,
@@ -54,7 +54,8 @@ public class LoginScreen extends JFrame {
 	                     greetingLabel = new JLabel("Hello", SwingConstants.CENTER),
 	    	             welcomeLabel = new JLabel(
 	    	            		 "Welcome to the Restaurant Order Tracking System!",
-	    	            		 SwingConstants.CENTER);
+	    	            		 SwingConstants.CENTER),
+	    	             errorMessage = new JLabel("Invalid Card Number!");
 	
 	private final JLabel price = new JLabel(),
 			             rating = new JLabel(),
@@ -102,7 +103,6 @@ public class LoginScreen extends JFrame {
 			}
 		});
 	}
-
 	
 	/******************************************
 	 ** Create the frame for the application **
@@ -290,11 +290,10 @@ public class LoginScreen extends JFrame {
 				((table.equals("Customers")) ? "c" : "e") + "username",
 				user, new String[]{"personid", "fname", "lname"});
 
-		// store the inormation as variables
+		// store the information as variables
 		personid = pidfnln[0];
 		fname = pidfnln[1];
 		lname = pidfnln[2];
-		
 	}
 	
 	// reset any fields and labels that use the user's info.
@@ -381,6 +380,8 @@ public class LoginScreen extends JFrame {
 		cardEntryPanel.add(cardNumField);
 		cardNumField.setMaximumSize(
 			     new Dimension(Integer.MAX_VALUE, cardNumField.getPreferredSize().height));
+		
+		
 		
 		// add the item detals and card entry to the description panel
 		descPanel.add(itemDetailsPanel, BorderLayout.NORTH);
@@ -641,9 +642,14 @@ public class LoginScreen extends JFrame {
 					addOrderToDatabase(cardnum);
 					// reset the card field
 					cardNumField.setText("");
+					errorMessage.setVisible(false);
 				}
 				else {
-					cardNumField.setText("Invalid Card Number! Please try again.");
+					//cardNumField.setText("Invalid Card Number! Please try again.");
+					errorMessage.setVisible(true);
+					errorMessage.setForeground(Color.RED);
+					cardEntryPanel.add(errorMessage);
+					cardEntryPanel.revalidate();
 				}
 			}		
 		});
@@ -657,6 +663,8 @@ public class LoginScreen extends JFrame {
 	                	itemLabel.setText(menuList.getSelectedValue().toString());
 	                	String itemname = itemLabel.getText(); // converts it label into string for updateItemInfo method
 	                	updateItemInfo(itemname); // calls method
+	                	cardNumField.setText("");
+	                	errorMessage.setVisible(false);
 	                }
 	            }
 	        });
@@ -670,6 +678,8 @@ public class LoginScreen extends JFrame {
 	                	itemLabel.setText(foodList.getSelectedValue().toString()); 
 	                	String itemname = itemLabel.getText(); // converts it label into string for updateItemInfo method
 	                	updateItemInfo(itemname); // calls method
+	                	cardNumField.setText("");
+	                	errorMessage.setVisible(false);
 	                }
 	            }
 	        });
@@ -683,6 +693,8 @@ public class LoginScreen extends JFrame {
 	                	itemLabel.setText(drinkList.getSelectedValue().toString());
 	                	String itemname = itemLabel.getText();	// converts it label into string for updateItemInfo method
 	                	updateItemInfo(itemname); //calls method
+	                	cardNumField.setText("");
+	                	errorMessage.setVisible(false);
 	                }
 	            }
 	        });
