@@ -131,7 +131,7 @@ public class LoginScreen extends JFrame {
 		contentPane.add(restaurantPanel, "2");
 		
 		// show the login screen first
-		switchToCard(2);
+		switchToCard(1);
 		
 		// add action listeners for all of the buttons and fields
 		createActionListeners(ls);
@@ -330,6 +330,9 @@ public class LoginScreen extends JFrame {
 		greetingPanel.setLayout(new BorderLayout());	// to hold the greeting message and logout button
 		menuPanel.setLayout(new GridLayout(1, 2));		// to hold the tabbed menu and the info panel
 		infoPanel.setLayout(new BorderLayout());		// to hold the selected item's info and order button
+		descPanel.setLayout(new BorderLayout());		// to hold the item details and card entry fields
+		itemDetailsPanel.setLayout(new BoxLayout(itemDetailsPanel, BoxLayout.PAGE_AXIS));	// to hold the item's descriptive info
+		cardEntryPanel.setLayout(new BoxLayout(cardEntryPanel, BoxLayout.Y_AXIS));	// to hold the textbox to input a card number
 		
 		// add proper spacing for the greeting panel
 		greetingPanel.setBorder(new EmptyBorder(0, 0, borderSize, 0));
@@ -364,17 +367,24 @@ public class LoginScreen extends JFrame {
 		drinkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		//// Adding the right side info panel
-		infoPanel.setMinimumSize(infoPanel.getPreferredSize());
-		
-		itemLabel.setBorder(new EmptyBorder(borderSize/2, borderSize/2, borderSize/2, borderSize/2));
+		itemLabel.setBorder(new EmptyBorder(0, 0, borderSize/2, 0));
 		
 		// adding text labels to the description panel
-		descriptionPanel.add(price);
-		descriptionPanel.add(rating);
-		descriptionPanel.add(calories);
-		descriptionPanel.add(is);
-		descriptionPanel.add(type);
-		descriptionPanel.setVisible(false);
+		itemDetailsPanel.add(price);
+		itemDetailsPanel.add(rating);
+		itemDetailsPanel.add(calories);
+		itemDetailsPanel.add(is);
+		itemDetailsPanel.add(type);
+		
+		// add a label and card text field to the card panel
+		cardEntryPanel.add(new JLabel("Enter your Card Number:"));
+		cardEntryPanel.add(cardNumField);
+		cardNumField.setMaximumSize(
+			     new Dimension(Integer.MAX_VALUE, cardNumField.getPreferredSize().height));
+		
+		// add the item detals and card entry to the description panel
+		descPanel.add(itemDetailsPanel, BorderLayout.NORTH);
+		descPanel.add(cardEntryPanel, BorderLayout.SOUTH);
 		descPanel.setVisible(false);
 		
 		// add info description and order button
@@ -494,6 +504,23 @@ public class LoginScreen extends JFrame {
 				columns);
 	}
 	
+	public boolean checkCardValidity(String id, String card) {
+		// flag to say whether the login info was found
+		boolean valid = false;
+		
+		// string arrays to hold the id and cardnumber combo
+		String userCard[] = {id, card};
+		String columns[] = {"personid", "cardnumber"};
+		
+		// search for the login info in the database
+		if(query.searchFor("People", columns, userCard)) {
+			valid = true;
+		}
+		
+		// return whether the login info was found or not
+		return valid;
+	}
+	
 	// adds a order to the database
 	public void addOrderToDatabase(String cardnumber){
 
@@ -604,7 +631,14 @@ public class LoginScreen extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// addOrderToDatabase(cardnumber);
+				String cardnum = cardNumField.getText();
+				if(checkCardValidity(personid, cardnum)){
+					addOrderToDatabase(cardnum);
+					cardNumField.setText("");
+				}
+				else {
+					// display incorrect card message
+				}
 			}		
 		});
 		
