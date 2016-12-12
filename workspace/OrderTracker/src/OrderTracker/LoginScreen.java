@@ -637,7 +637,7 @@ public class LoginScreen extends JFrame {
 					cardNumField.setText("");
 				}
 				else {
-					// display incorrect card message
+					cardNumField.setText("Invalid Card Number! Please try again.");
 				}
 			}		
 		});
@@ -649,8 +649,8 @@ public class LoginScreen extends JFrame {
 	         public void valueChanged(ListSelectionEvent arg0) {
 	                if (!arg0.getValueIsAdjusting()) {
 	                	itemLabel.setText(menuList.getSelectedValue().toString());
-	                	String itemname = itemLabel.getText();
-	                	updateItemInfo(itemname);
+	                	String itemname = itemLabel.getText(); // converts it label into string for updateItemInfo method
+	                	updateItemInfo(itemname); // calls method
 	                }
 	            }
 	        });
@@ -661,9 +661,9 @@ public class LoginScreen extends JFrame {
 			@Override
 	         public void valueChanged(ListSelectionEvent arg0) {
 	                if (!arg0.getValueIsAdjusting()) {
-	                	itemLabel.setText(foodList.getSelectedValue().toString());
-	                	String itemname = itemLabel.getText();
-	                	updateItemInfo(itemname);
+	                	itemLabel.setText(foodList.getSelectedValue().toString()); 
+	                	String itemname = itemLabel.getText(); // converts it label into string for updateItemInfo method
+	                	updateItemInfo(itemname); // calls method
 	                }
 	            }
 	        });
@@ -675,8 +675,8 @@ public class LoginScreen extends JFrame {
 	         public void valueChanged(ListSelectionEvent arg0) {
 	                if (!arg0.getValueIsAdjusting()) {
 	                	itemLabel.setText(drinkList.getSelectedValue().toString());
-	                	String itemname = itemLabel.getText();
-	                	updateItemInfo(itemname);
+	                	String itemname = itemLabel.getText();	// converts it label into string for updateItemInfo method
+	                	updateItemInfo(itemname); //calls method
 	                }
 	            }
 	        });
