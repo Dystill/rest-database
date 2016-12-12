@@ -1,9 +1,9 @@
 package OrderTracker;
 
 import java.awt.*;
-import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.event.*;
 
@@ -79,6 +79,9 @@ public class LoginScreen extends JFrame {
     	             	{"Login", "Select an item to order", "Order"};
     
     private String currentUser, fname, lname, personid;
+    
+    private float itemprice;
+    private String itemname;
     		
 	/****************************
 	 ** Launch the application **
@@ -124,7 +127,7 @@ public class LoginScreen extends JFrame {
 		contentPane.add(restaurantPanel, "2");
 		
 		// show the login screen first
-		switchToCard(1);
+		switchToCard(2);
 		
 		// add action listeners for all of the buttons and fields
 		createActionListeners(ls);
@@ -289,16 +292,11 @@ public class LoginScreen extends JFrame {
 	// reset any fields and labels that use the user's info.
 	private void resetUserLoginInfo() {
 		currentUser = fname = lname = personid = "";
+		itemprice = 0;
+		itemname = "";
 		greetingLabel.setText("");
 		userField.setText("");
 		passField.setText("");
-		/*
-		price.setText("");
-		rating.setText("");
-		calories.setText("");
-		is.setText("");
-		type.setText("");
-		*/
 		itemLabel.setText("Click an item to view its details!");
 		descriptionPanel.setVisible(false);
 		order.setVisible(false);
@@ -399,6 +397,9 @@ public class LoginScreen extends JFrame {
 		order.setVisible(false);
 		
 		String[] info = getItemInfo("MenuItems", itemname);
+		
+		itemprice = Float.parseFloat(info[0]);
+		this.itemname = itemname;
 
 		price.setText("Price: $" + info[0]);
 		rating.setText("Rating: " + info[1] + "/5");
@@ -459,6 +460,30 @@ public class LoginScreen extends JFrame {
 				"itemname",
 				itemname,
 				columns);
+	}
+	
+	// adds a order to the database
+	public void addOrderToDatabase(String cardnumber){
+
+		DecimalFormat df = new DecimalFormat("#####.00");
+		
+		String values =
+				(query.countRowsIn("Orders") + 1) + ", " +
+				Integer.parseInt(cardnumber) + ", '" + 
+				itemname + "', " + 
+				df.format(calculatePriceTotal()) + ", " + 
+				"DATETIME('now')";
+		
+		query.addRowTo("Orders", values);
+	}
+	
+	// calculates the combined total for an order after a discount
+	public float calculatePriceTotal() {
+		float total = itemprice;
+		
+		// calculate discount if employee
+		
+		return total;
 	}
 	
 	/***************************************************
@@ -531,7 +556,7 @@ public class LoginScreen extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				// addOrderToDatabase(cardnumber);
 			}		
 		});
 		

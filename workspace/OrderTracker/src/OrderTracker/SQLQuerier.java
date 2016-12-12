@@ -20,7 +20,7 @@ public class SQLQuerier {
 		}
 	}
 	
-	// method for creating a table
+	/* method for creating a table
 	public void createTable(String query) throws SQLException {
 		
 	    try {
@@ -35,6 +35,7 @@ public class SQLQuerier {
 	    }
 		System.out.println("Created Table.");
 	}
+	*/
 	
 	// searches for a single value in a single column of the specified table
 	// returns true if the value exists
@@ -60,7 +61,12 @@ public class SQLQuerier {
 					exists = true;	// set flag to true if the value was found.
 				}
 			}
+			
+			// close the statement connection
+	        if (stmt != null) stmt.close();
+	        
 			rs.close();
+			
 		}
 		catch (SQLException e) {
 	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
@@ -95,6 +101,9 @@ public class SQLQuerier {
 				// call recursive search function to go through columns
 				exists = searchForRecurse(rs, cols, vals, 0);
 			}
+			
+			// close the statement connection
+	        if (stmt != null) stmt.close();
 			
 			rs.close();
 		}
@@ -160,7 +169,10 @@ public class SQLQuerier {
 			while(rs.next()) {
 				list.add(rs.getString(column));
 			}
-			
+
+			// close the statement connection
+	        if (stmt != null) stmt.close();
+	        
 			// close the result set
 			rs.close();
 		}
@@ -195,6 +207,9 @@ public class SQLQuerier {
 				list.add(rs.getString(col));
 			}
 			
+			// close the statement connection
+	        if (stmt != null) stmt.close();
+			
 			// close the result set
 			rs.close();
 		}
@@ -204,6 +219,59 @@ public class SQLQuerier {
 		
 		// convert the arraylist to a string array
 		return list.toArray(new String[list.size()]);
+	}
+	
+	public void addRowTo(String table, String values){
+
+		System.out.println("adding order");
+		
+		String query = "insert into " + table + " values (" + values + ")";
+		
+		System.out.println(query);
+		
+		try {
+	        stmt = con.createStatement();
+	        stmt.executeUpdate(query);
+	        if (stmt != null) stmt.close();
+	    }
+	    catch (SQLException e) {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    }
+	}
+	
+	public int countRowsIn(String table) {
+		
+		int count = 0;
+		
+		try {
+			// create statement
+	        stmt = con.createStatement();
+			ResultSet rs;
+
+			System.out.println("counting rows");
+			
+			String query = "select\tcount(*)\tcount\tfrom " + table;	// for some reason \t works, but not spaces.
+
+			System.out.println(query);
+			
+			// execute the query
+			rs = stmt.executeQuery(query);
+			
+			count = rs.getInt("count");
+			
+			System.out.println(count + "");
+			
+			// close the statement connection
+	        if (stmt != null) stmt.close();
+			
+			// close the result set
+			rs.close();
+	    }
+	    catch (SQLException e) {
+	    	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    }
+		
+		return count;
 	}
 	
 }
